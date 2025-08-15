@@ -3,24 +3,25 @@ name: Upload to Qiniu
 on:
   push:
     branches:
-      - main
+      - main  # 监听 main 分支，如需其他分支可改
 
 jobs:
   upload:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload to Qiniu
-        uses: luochongfei/up2qn@0.0.1
+      - name: Upload to 
+        uses: qiniu-action/qiniu-action@v1.3.0
         with:
-          bucket: ${{ secrets.QINIU_BUCKET }}
-          zone: 东南亚       # 华东 / 华北 / 华南 / 北美 / 东南亚
           access_key: ${{ secrets.QINIU_ACCESS_KEY }}
           secret_key: ${{ secrets.QINIU_SECRET_KEY }}
-          local_dir: .     # 上传整个仓库
-          local_exclude: |
+          bucket: ${{ secrets.QINIU_BUCKET }}
+          zone: "东南亚"  # 配置七牛云区域（华东 / 华南 / 华北 / 东南亚 / 北美）
+          local_dir: "."  # 上传整个仓库
+          exclude: |
             .git
             .github
-          target_dir: /     # 上传到空间根目录
+          target_dir: "/"  # 上传到七牛云的根目录
