@@ -5,17 +5,18 @@ jobs:
   job1:
     name: 上传到七牛云任务
     runs-on: Ubuntu-20.04
+    environment: Production  # Make sure the environment is defined here
     steps:
-    - name: 检索文件
-      uses: actions/checkout@v2
+      - name: 检索文件
+        uses: actions/checkout@v2
 
-    - name: 执行上传
-      uses: luochongfei/up2qn@master
-      with:
-        bucket: cdn-zwx # 空间名称，按实际情况填写
-        zone: 东南亚 # 存储区域，按实际情况填写 备注1
-        access_key: ${{ QINIU_ACCESS_KEY }} # 七牛云 AccessKey 备注2
-        secret_key: ${{ QINIU_SECRET_KEY }} # 七牛云 SecretKey 备注2
-        local_dir: . # 本地文件夹
-        local_exclude: "" # 要排除的内容，要符合 glob 格式
-        target_dir: / # 要上传到七牛云中的文件夹
+      - name: 执行上传
+        uses: luochongfei/up2qn@master
+        with:
+          bucket: cdn-zwx
+          zone: 东南亚
+          access_key: ${{ secrets.QINIU_ACCESS_KEY }}
+          secret_key: ${{ secrets.QINIU_SECRET_KEY }}
+          local_dir: .
+          local_exclude: ""
+          target_dir: /
