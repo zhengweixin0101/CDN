@@ -1,0 +1,292 @@
+{
+  "picBed": {
+    "current": "github",
+    "uploader": "github",
+    "smms": {
+      "_configName": "Default",
+      "_id": "31e55c54-6311-4794-a6c4-ec5c9c50af3f",
+      "_createdAt": 1755305271406,
+      "_updatedAt": 1755305678102,
+      "token": "",
+      "backupDomain": ""
+    },
+    "list": [
+      {
+        "type": "tcyun",
+        "name": "腾讯云COS",
+        "visible": true
+      },
+      {
+        "type": "advancedplist",
+        "name": "高级自定义",
+        "visible": true
+      },
+      {
+        "type": "alistplist",
+        "name": "AList",
+        "visible": true
+      },
+      {
+        "type": "aliyun",
+        "name": "阿里云OSS",
+        "visible": true
+      },
+      {
+        "type": "aws-s3-plist",
+        "name": "AWS S3",
+        "visible": true
+      },
+      {
+        "type": "github",
+        "name": "GitHub",
+        "visible": true
+      },
+      {
+        "type": "imgur",
+        "name": "Imgur",
+        "visible": true
+      },
+      {
+        "type": "local",
+        "name": "本地上传",
+        "visible": true
+      },
+      {
+        "type": "lskyplist",
+        "name": "兰空图床",
+        "visible": true
+      },
+      {
+        "type": "piclist",
+        "name": "PicList",
+        "visible": true
+      },
+      {
+        "type": "qiniu",
+        "name": "七牛云",
+        "visible": true
+      },
+      {
+        "type": "sftpplist",
+        "name": "内置SFTP",
+        "visible": true
+      },
+      {
+        "type": "smms",
+        "name": "SM.MS",
+        "visible": true
+      },
+      {
+        "type": "upyun",
+        "name": "又拍云",
+        "visible": true
+      },
+      {
+        "type": "webdavplist",
+        "name": "WebDAV",
+        "visible": true
+      }
+    ],
+    "github": {
+      "_configName": "CDN-blog-posts",
+      "_id": "139f21d0-74d7-4cae-8786-02d35c29db89",
+      "_createdAt": 1755305961304,
+      "_updatedAt": 1755309426096,
+      "repo": "zhengweixin0101/CDN",
+      "branch": "main",
+      "token": "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",
+      "path": "blog/posts/",
+      "customUrl": "https://cdn.zhengweixin.top"
+    },
+    "tcyun": {
+      "_configName": "Default",
+      "_id": "87019f8c-8ccd-4e5a-8771-710d48205564",
+      "_createdAt": 1755307077558,
+      "_updatedAt": 1755307077558
+    },
+    "local": {
+      "_configName": "Default",
+      "_id": "2876cb3e-ca42-45bc-8d05-07e40db94774",
+      "_createdAt": 1755309057448,
+      "_updatedAt": 1755309057448
+    },
+    "imgur": {
+      "_configName": "Default",
+      "_id": "92a32cde-56a1-4cde-baf4-3f9e3ae5d487",
+      "_createdAt": 1755309057901,
+      "_updatedAt": 1755309057901
+    },
+    "aws-s3-plist": {
+      "_configName": "Default",
+      "_id": "0ac98499-1d39-4f13-b888-3e28a0d81ca6",
+      "_createdAt": 1755309058741,
+      "_updatedAt": 1755309058741
+    }
+  },
+  "settings": {
+    "shortKey": {
+      "picgo:upload": {
+        "enable": true,
+        "key": "CommandOrControl+Alt+P",
+        "name": "upload",
+        "label": "QUICK_UPLOAD"
+      }
+    },
+    "server": {
+      "port": 36677,
+      "host": "0.0.0.0",
+      "enable": true
+    },
+    "isListeningClipboard": false,
+    "showUpdateTip": true,
+    "startMode": "main",
+    "useShortUrl": false,
+    "miniWindowPosition": [
+      1949,
+      1004
+    ],
+    "deleteCloudFile": true,
+    "enableSecondUploader": false,
+    "autoRename": false,
+    "deleteLocalFile": false,
+    "encodeOutputURL": false,
+    "rename": false,
+    "enableWebServer": false,
+    "customLink": "",
+    "pasteStyle": "URL",
+    "sync": {
+      "type": "github",
+      "username": "zhengweixin0101",
+      "repo": "CDN",
+      "branch": "main",
+      "token": "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",
+      "endpoint": "",
+      "proxy": "",
+      "interval": 60,
+      "webdavEndpoint": "",
+      "webdavUsername": "",
+      "webdavPassword": "",
+      "webdavAuthType": "basic",
+      "webdavSslEnabled": true,
+      "webdavSavePath": ""
+    }
+  },
+  "picgoPlugins": {},
+  "debug": true,
+  "PICGO_ENV": "GUI",
+  "needReload": false,
+  "uploader": {
+    "smms": {
+      "configList": [
+        {
+          "_configName": "Default",
+          "_id": "31e55c54-6311-4794-a6c4-ec5c9c50af3f",
+          "_createdAt": 1755305271406,
+          "_updatedAt": 1755305678102,
+          "token": "",
+          "backupDomain": ""
+        }
+      ],
+      "defaultId": "31e55c54-6311-4794-a6c4-ec5c9c50af3f"
+    },
+    "github": {
+      "configList": [
+        {
+          "_configName": "CDN-blog-posts",
+          "_id": "139f21d0-74d7-4cae-8786-02d35c29db89",
+          "_createdAt": 1755305961304,
+          "_updatedAt": 1755309426096,
+          "repo": "zhengweixin0101/CDN",
+          "branch": "main",
+          "token": "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",
+          "path": "blog/posts/",
+          "customUrl": "https://cdn.zhengweixin.top"
+        }
+      ],
+      "defaultId": "139f21d0-74d7-4cae-8786-02d35c29db89"
+    },
+    "tcyun": {
+      "configList": [
+        {
+          "_configName": "Default",
+          "_id": "87019f8c-8ccd-4e5a-8771-710d48205564",
+          "_createdAt": 1755307077558,
+          "_updatedAt": 1755307077558
+        }
+      ],
+      "defaultId": "87019f8c-8ccd-4e5a-8771-710d48205564"
+    },
+    "local": {
+      "configList": [
+        {
+          "_configName": "Default",
+          "_id": "2876cb3e-ca42-45bc-8d05-07e40db94774",
+          "_createdAt": 1755309057448,
+          "_updatedAt": 1755309057448
+        }
+      ],
+      "defaultId": "2876cb3e-ca42-45bc-8d05-07e40db94774"
+    },
+    "imgur": {
+      "configList": [
+        {
+          "_configName": "Default",
+          "_id": "92a32cde-56a1-4cde-baf4-3f9e3ae5d487",
+          "_createdAt": 1755309057901,
+          "_updatedAt": 1755309057901
+        }
+      ],
+      "defaultId": "92a32cde-56a1-4cde-baf4-3f9e3ae5d487"
+    },
+    "aws-s3-plist": {
+      "configList": [
+        {
+          "_configName": "Default",
+          "_id": "0ac98499-1d39-4f13-b888-3e28a0d81ca6",
+          "_createdAt": 1755309058741,
+          "_updatedAt": 1755309058741
+        }
+      ],
+      "defaultId": "0ac98499-1d39-4f13-b888-3e28a0d81ca6"
+    }
+  },
+  "buildIn": {
+    "compress": {
+      "quality": 100,
+      "isConvert": false,
+      "convertFormat": "jpg",
+      "isReSize": false,
+      "reSizeWidth": 500,
+      "reSizeHeight": 500,
+      "skipReSizeOfSmallImg": false,
+      "isReSizeByPercent": false,
+      "reSizePercent": 50,
+      "isRotate": false,
+      "rotateDegree": 0,
+      "isRemoveExif": false,
+      "isFlip": false,
+      "isFlop": false,
+      "formatConvertObj": {}
+    },
+    "watermark": {
+      "isAddWatermark": false,
+      "watermarkType": "text",
+      "isFullScreenWatermark": false,
+      "watermarkDegree": 0,
+      "watermarkText": "",
+      "watermarkFontPath": "",
+      "watermarkScaleRatio": 0.15,
+      "watermarkColor": "#CCCCCC73",
+      "watermarkImagePath": "",
+      "watermarkPosition": "southeast",
+      "watermarkImageOpacity": 255
+    },
+    "skipProcess": {
+      "skipProcessExtList": "zip,rar,7z,tar,gz,tar.gz,tar.bz2,tar.xz"
+    },
+    "rename": {
+      "enable": true,
+      "format": "{uuid}"
+    }
+  }
+}
