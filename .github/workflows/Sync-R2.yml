@@ -2,13 +2,12 @@ name: Sync R2 to Branch
 
 on:
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *'   # 每天同步一次
+  workflow_dispatch:      # 支持手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -16,74 +15,33 @@ jobs:
           ref: r2-sync
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install aws-sdk
-
-      - name: Sync R2 files to branch
+      - name: Set up AWS CLI
         run: |
-          R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Sync R2 files to local branch
+        run: |
           R2_BUCKET=${{ secrets.R2_BUCKET }}
-          R2_ACCESS_KEY_ID=${{ secrets.R2_KEY }}
-          R2_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET }}
-          GIT_USER_NAME=github-actions
-          GIT_USER_EMAIL=actions@github.com
+          R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID=${{ secrets.R2_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET }}
+          BRANCH=r2-sync
 
-          node -e '
-          const fs = require("fs");
-          const path = require("path");
-          const AWS = require("aws-sdk");
-          const { execSync } = require("child_process");
+          mkdir -p r2-files
 
-          const bucket = process.env.R2_BUCKET;
-          console.log("Bucket:", bucket);
+          echo "Listing and downloading R2 files..."
+          aws s3 sync s3://$R2_BUCKET ./r2-files \
+            --endpoint-url https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com
 
-          const r2 = new AWS.S3({
-            endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-            accessKeyId: process.env.R2_ACCESS_KEY_ID,
-            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-            signatureVersion: "v4",
-          });
+          echo "Switching to branch $BRANCH..."
+          git checkout $BRANCH
 
-          const downloadDir = "./r2-files";
-          if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+          echo "Copying R2 files to branch..."
+          rsync -a --delete ./r2-files/ ./
 
-          async function listAllKeys(marker) {
-            let keys = [];
-            let params = { Bucket: bucket };
-            if (marker) params.ContinuationToken = marker;
-            const data = await r2.listObjectsV2(params).promise();
-            keys = keys.concat(data.Contents.map(obj => obj.Key));
-            if (data.IsTruncated) {
-              keys = keys.concat(await listAllKeys(data.NextContinuationToken));
-            }
-            return keys;
-          }
-
-          async function downloadFile(key) {
-            const filePath = path.join(downloadDir, key);
-            fs.mkdirSync(path.dirname(filePath), { recursive: true });
-            const obj = await r2.getObject({ Bucket: bucket, Key: key }).promise();
-            fs.writeFileSync(filePath, obj.Body);
-          }
-
-          (async () => {
-            const keys = await listAllKeys();
-            for (const key of keys) {
-              await downloadFile(key);
-              console.log("Downloaded", key);
-            }
-
-            execSync("git checkout r2-sync");
-            execSync("rsync -a --delete ./r2-files/ ./");
-            execSync("git config user.name \"" + process.env.GIT_USER_NAME + "\"");
-            execSync("git config user.email \"" + process.env.GIT_USER_EMAIL + "\"");
-            execSync("git add .");
-            execSync("git commit -m \"Sync R2 files\" || echo \"No changes to commit\"");
-            execSync("git push origin r2-sync");
-          })();
-          '
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Sync R2 files" || echo "No changes to commit"
+          git push origin $BRANCH
