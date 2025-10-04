@@ -18,6 +18,7 @@ jobs:
 
       - name: Configure rclone for R2
         run: |
+          mkdir -p ~/.config/rclone
           cat <<EOF > ~/.config/rclone/rclone.conf
           [r2]
           type = s3
