@@ -1,0 +1,47 @@
+name: Sync R2 Bucket to r2-sync Branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-r2:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # fetch all branches
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install boto3
+
+      - name: Checkout r2-sync branch
+        run: |
+          git checkout r2-sync || git checkout --orphan r2-sync
+          git rm -rf .  # remove all tracked files except .git
+
+      - name: Sync R2 files
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        run: |
+          python .github/scripts/r2_sync.py
+
+      - name: Commit and push changes to r2-sync
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add .
+          git commit -am "Sync R2 bucket to r2-sync branch" || echo "No changes to commit"
+          git push origin r2-sync --force
