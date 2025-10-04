@@ -8,13 +8,14 @@ on:
 jobs:
   sync-r2:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # fetch all branches
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -27,7 +28,7 @@ jobs:
       - name: Checkout r2-sync branch
         run: |
           git checkout r2-sync || git checkout --orphan r2-sync
-          git rm -rf .  # remove all tracked files except .git
+          git rm -rf . || true
 
       - name: Sync R2 files
         env:
