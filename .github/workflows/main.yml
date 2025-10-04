@@ -1,0 +1,94 @@
+name: Sync R2 to Branch
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: r2-sync
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install aws-sdk
+
+      - name: Sync R2 files to branch
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_KEY }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          GIT_USER_NAME: 'github-actions'
+          GIT_USER_EMAIL: 'actions@github.com'
+          BRANCH: 'r2-sync'
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const AWS = require('aws-sdk');
+          const { execSync } = require('child_process');
+
+          const bucket = process.env.R2_BUCKET;
+          const r2 = new AWS.S3({
+            endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            accessKeyId: process.env.R2_ACCESS_KEY_ID,
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+            signatureVersion: 'v4',
+          });
+
+          const downloadDir = './r2-files';
+          if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+
+          async function listAllKeys(marker) {
+            let keys = [];
+            let params = { Bucket: bucket };
+            if (marker) params.ContinuationToken = marker;
+            const data = await r2.listObjectsV2(params).promise();
+            keys = keys.concat(data.Contents.map(obj => obj.Key));
+            if (data.IsTruncated) {
+              keys = keys.concat(await listAllKeys(data.NextContinuationToken));
+            }
+            return keys;
+          }
+
+          async function downloadFile(key) {
+            const filePath = path.join(downloadDir, key);
+            fs.mkdirSync(path.dirname(filePath), { recursive: true });
+            const obj = await r2.getObject({ Bucket: bucket, Key: key }).promise();
+            fs.writeFileSync(filePath, obj.Body);
+          }
+
+          (async () => {
+            const keys = await listAllKeys();
+            for (const key of keys) {
+              await downloadFile(key);
+              console.log('Downloaded', key);
+            }
+
+            // 如果分支不存在，创建分支
+            try { execSync(`git checkout ${process.env.BRANCH}`) } 
+            catch { execSync(`git checkout -b ${process.env.BRANCH}`) }
+
+            // 用 R2 文件覆盖分支
+            execSync(`rsync -a --delete ${downloadDir}/ ./`);
+
+            // Git 提交
+            execSync('git config user.name \"' + process.env.GIT_USER_NAME + '\"');
+            execSync('git config user.email \"' + process.env.GIT_USER_EMAIL + '\"');
+            execSync('git add .');
+            execSync('git commit -m \"Sync R2 files\" || echo \"No changes\"');
+            execSync(`git push origin ${process.env.BRANCH}`);
+          })();
+          "
