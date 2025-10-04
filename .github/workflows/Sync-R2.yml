@@ -32,13 +32,14 @@ jobs:
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           GIT_USER_NAME: 'github-actions'
           GIT_USER_EMAIL: 'actions@github.com'
+          BRANCH: 'r2-sync'
         run: |
           node -e '
           const fs = require("fs");
           const path = require("path");
           const AWS = require("aws-sdk");
           const { execSync } = require("child_process");
-
+      
           const bucket = process.env.R2_BUCKET;
           const r2 = new AWS.S3({
             endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -46,10 +47,10 @@ jobs:
             secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
             signatureVersion: "v4",
           });
-
+      
           const downloadDir = "./r2-files";
           if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
-
+      
           async function listAllKeys(marker) {
             let keys = [];
             let params = { Bucket: bucket };
@@ -61,25 +62,23 @@ jobs:
             }
             return keys;
           }
-
+      
           async function downloadFile(key) {
             const filePath = path.join(downloadDir, key);
             fs.mkdirSync(path.dirname(filePath), { recursive: true });
             const obj = await r2.getObject({ Bucket: bucket, Key: key }).promise();
             fs.writeFileSync(filePath, obj.Body);
           }
-
+      
           (async () => {
             const keys = await listAllKeys();
             for (const key of keys) {
               await downloadFile(key);
               console.log("Downloaded", key);
             }
-
+      
             execSync("git checkout r2-sync");
-
             execSync("rsync -a --delete ./r2-files/ ./");
-
             execSync("git config user.name \"" + process.env.GIT_USER_NAME + "\"");
             execSync("git config user.email \"" + process.env.GIT_USER_EMAIL + "\"");
             execSync("git add .");
