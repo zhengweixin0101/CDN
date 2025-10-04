@@ -25,9 +25,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
         run: |
           while read status file; do
+            [[ "$file" == ".github/workflows/"* ]] && continue
             if [[ "$status" == "A" || "$status" == "M" ]]; then
               echo "Uploading $file"
-              aws s3 cp "$file" "s3://cdn/$file" --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
+              aws s3 cp "$file" "s3://cdn/$file" \
+                --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
             fi
           done < changes.txt
 
@@ -37,8 +39,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
         run: |
           while read status file; do
+            [[ "$file" == ".github/workflows/"* ]] && continue
             if [[ "$status" == "D" ]]; then
               echo "Deleting $file"
-              aws s3 rm "s3://cdn/$file" --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
+              aws s3 rm "s3://cdn/$file" \
+                --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
             fi
           done < changes.txt
