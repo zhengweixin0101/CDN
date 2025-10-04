@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync from R2
         run: |
-          rclone copy Cloudflare:${{ cdn }} ./ \
+          rclone copy Cloudflare:cdn ./ \
             --transfers=8 --checkers=16 --exclude=.git/** --exclude=.github/** --exclude=README.md
         env:
           RCLONE_CONFIG_PASS: ''
