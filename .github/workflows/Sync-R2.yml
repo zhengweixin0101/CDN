@@ -22,14 +22,13 @@ jobs:
           git clean -fdx
 
       - name: Sync files from R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
-        run: |
-          mkdir -p r2-files
-          aws s3 sync "s3://cdn" ./r2-files \
+        env: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_KEY }} 
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }} 
+        run: | 
+          while read status file; do [[ "$file" == ".github/workflows/"* ]] && continue if [[ "$status" == "A" || "$status" == "M" ]]; then echo "Uploading $file" 
+          aws s3 cp "$file" "s3://cdn/$file" \ 
             --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
-          cp -r r2-files/* . || true
 
       - name: Commit and push
         run: |
