@@ -16,21 +16,20 @@ jobs:
       - name: Configure rclone for R2
         run: |
           mkdir -p ~/.config/rclone
-          cat <<EOF > ~/.config/rclone/rclone.conf
-          [r2]
-          type = s3
-          provider = Cloudflare
-          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
-          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          endpoint = ${{ secrets.R2_ENDPOINT }}
-          region = auto
-          EOF
+          cat > ~/.config/rclone/rclone.conf <<EOF
+[r2]
+type = s3
+provider = Other
+access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+endpoint = ${{ secrets.R2_ENDPOINT }}
+region = auto
+EOF
 
       - name: Test R2 connection
-        run: |
-          rclone ls r2:${{ secrets.R2_BUCKET_NAME }} -vv
+        run: rclone lsd r2: -vv
 
       - name: Sync R2 bucket to repo folder
         run: |
           mkdir -p r2-sync
-          rclone sync r2:${{ secrets.R2_BUCKET_NAME }} r2-sync --progress --fast-list -vv
+          rclone sync r2: r2-sync --progress --fast-list -vv
