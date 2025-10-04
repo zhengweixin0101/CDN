@@ -15,14 +15,14 @@ jobs:
         run: |
           mkdir -p $GITHUB_WORKSPACE/.rclone
           cat > $GITHUB_WORKSPACE/.rclone/rclone.conf <<EOF
-[r2]
-type = s3
-provider = Other
-access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
-secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
-endpoint = ${{ secrets.R2_ENDPOINT }}
-region = auto
-EOF
+          [r2]
+          type = s3
+          provider = Other
+          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          endpoint = ${{ secrets.R2_ENDPOINT }}
+          region = auto
+          EOF
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
 
