@@ -17,27 +17,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Checkout r2-sync branch and preserve script
+      - name: Copy r2_sync.py to /tmp
+        run: cp .github/scripts/r2_sync.py /tmp/r2_sync.py
+
+      - name: Checkout r2-sync branch
         run: |
           git checkout r2-sync || git checkout --orphan r2-sync
-          cp .github/scripts/r2_sync.py /tmp/r2_sync.py
           git rm -rf . || true
+
+      - name: Restore r2_sync.py from /tmp
+        run: |
           mkdir -p .github/scripts
           mv /tmp/r2_sync.py .github/scripts/r2_sync.py
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install boto3
-      
+
       - name: Sync R2 files
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -45,7 +45,7 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
         run: python .github/scripts/r2_sync.py
-      
+
       - name: Commit and push changes to r2-sync
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
