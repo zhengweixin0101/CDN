@@ -32,7 +32,6 @@ jobs:
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           GIT_USER_NAME: 'github-actions'
           GIT_USER_EMAIL: 'actions@github.com'
-          BRANCH: 'r2-sync'
         run: |
           node -e '
           const fs = require("fs");
@@ -47,6 +46,8 @@ jobs:
             secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
             signatureVersion: "v4",
           });
+      
+          console.log("Bucket:", bucket);
       
           const downloadDir = "./r2-files";
           if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
