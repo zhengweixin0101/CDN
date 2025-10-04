@@ -2,8 +2,8 @@ name: Sync R2 to Branch
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天同步一次
-  workflow_dispatch:      # 支持手动触发
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -15,12 +15,13 @@ jobs:
           ref: r2-sync
           fetch-depth: 0
 
-      - name: Set up AWS CLI
+      - name: Set up Python and AWS CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y awscli
+          sudo apt-get install -y python3 python3-pip
+          pip3 install --upgrade awscli
 
-      - name: Sync R2 files to local branch
+      - name: Sync R2 files to branch
         run: |
           R2_BUCKET=${{ secrets.R2_BUCKET }}
           R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
@@ -30,14 +31,14 @@ jobs:
 
           mkdir -p r2-files
 
-          echo "Listing and downloading R2 files..."
+          echo "Downloading files from R2..."
           aws s3 sync s3://$R2_BUCKET ./r2-files \
             --endpoint-url https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com
 
           echo "Switching to branch $BRANCH..."
           git checkout $BRANCH
 
-          echo "Copying R2 files to branch..."
+          echo "Copying files to branch..."
           rsync -a --delete ./r2-files/ ./
 
           git config user.name "github-actions"
