@@ -1,5 +1,4 @@
 name: Sync Cloudflare R2 to Repo
-
 on:
   workflow_dispatch:
 
@@ -7,16 +6,15 @@ jobs:
   sync-r2:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install rclone
         run: curl https://rclone.org/install.sh | sudo bash
 
       - name: Configure rclone for R2
         run: |
-          mkdir -p ~/.config/rclone
-          cat > ~/.config/rclone/rclone.conf <<EOF
+          mkdir -p $GITHUB_WORKSPACE/.rclone
+          cat > $GITHUB_WORKSPACE/.rclone/rclone.conf <<EOF
 [r2]
 type = s3
 provider = Other
@@ -25,11 +23,14 @@ secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
 endpoint = ${{ secrets.R2_ENDPOINT }}
 region = auto
 EOF
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
 
       - name: Test R2 connection
-        run: rclone lsd r2: -vv
+        run: RCLONE_CONFIG_FILE=$GITHUB_WORKSPACE/.rclone/rclone.conf rclone lsd r2: -vv
 
       - name: Sync R2 bucket to repo folder
         run: |
           mkdir -p r2-sync
+          RCLONE_CONFIG_FILE=$GITHUB_WORKSPACE/.rclone/rclone.conf \
           rclone sync r2: r2-sync --progress --fast-list -vv
