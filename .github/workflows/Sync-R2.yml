@@ -1,39 +1,43 @@
-name: Sync R2 to r2-sync
+name: Sync Cloudflare R2 to Repo
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: '0 * * * *'
 
 jobs:
-  sync_r2:
+  sync-r2:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout r2-sync branch
-        uses: actions/checkout@v3
-        with:
-          ref: r2-sync
-          fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Rclone
-        uses: AnimMouse/setup-rclone@v1
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
-
-      - name: Clean branch
+      - name: Install rclone
         run: |
-          git rm -rf . || true
-          git clean -fdx
+          curl https://rclone.org/install.sh | sudo bash
 
-      - name: Sync from R2
+      - name: Configure rclone for R2
         run: |
-          rclone copy Cloudflare:cdn ./ \
-            --transfers=8 --checkers=16 --exclude=.git/** --exclude=.github/** --exclude=README.md
-        env:
-          RCLONE_CONFIG_PASS: ''
+          cat <<EOF > ~/.config/rclone/rclone.conf
+          [r2]
+          type = s3
+          provider = Cloudflare
+          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          endpoint = ${{ secrets.R2_ENDPOINT }}
+          region = auto
+          EOF
 
-      - name: Commit & Push
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'chore: sync from R2'
-          add: './'
+      - name: Sync R2 bucket to repo folder
+        run: |
+          mkdir -p r2-sync
+          rclone sync r2:${{ secrets.R2_BUCKET_NAME }} r2-sync --progress --fast-list
+
+      - name: Commit & Push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add r2-sync
+          git diff --cached --quiet || \
+            git commit -m "Sync R2 files to repository"
+          git push origin HEAD:r2-sync
