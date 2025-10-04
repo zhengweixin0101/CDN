@@ -2,7 +2,7 @@ name: Sync R2 to Branch
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: 0 0 * * *
   workflow_dispatch:
 
 jobs:
@@ -32,23 +32,22 @@ jobs:
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           GIT_USER_NAME: 'github-actions'
           GIT_USER_EMAIL: 'actions@github.com'
-          BRANCH: 'r2-sync'
         run: |
-          node -e "
-          const fs = require('fs');
-          const path = require('path');
-          const AWS = require('aws-sdk');
-          const { execSync } = require('child_process');
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const AWS = require("aws-sdk");
+          const { execSync } = require("child_process");
 
           const bucket = process.env.R2_BUCKET;
           const r2 = new AWS.S3({
             endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
             accessKeyId: process.env.R2_ACCESS_KEY_ID,
             secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-            signatureVersion: 'v4',
+            signatureVersion: "v4",
           });
 
-          const downloadDir = './r2-files';
+          const downloadDir = "./r2-files";
           if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
 
           async function listAllKeys(marker) {
@@ -74,21 +73,17 @@ jobs:
             const keys = await listAllKeys();
             for (const key of keys) {
               await downloadFile(key);
-              console.log('Downloaded', key);
+              console.log("Downloaded", key);
             }
 
-            // 如果分支不存在，创建分支
-            try { execSync(`git checkout ${process.env.BRANCH}`) } 
-            catch { execSync(`git checkout -b ${process.env.BRANCH}`) }
+            execSync("git checkout r2-sync");
 
-            // 用 R2 文件覆盖分支
-            execSync(`rsync -a --delete ${downloadDir}/ ./`);
+            execSync("rsync -a --delete ./r2-files/ ./");
 
-            // Git 提交
-            execSync('git config user.name \"' + process.env.GIT_USER_NAME + '\"');
-            execSync('git config user.email \"' + process.env.GIT_USER_EMAIL + '\"');
-            execSync('git add .');
-            execSync('git commit -m \"Sync R2 files\" || echo \"No changes\"');
-            execSync(`git push origin ${process.env.BRANCH}`);
+            execSync("git config user.name \"" + process.env.GIT_USER_NAME + "\"");
+            execSync("git config user.email \"" + process.env.GIT_USER_EMAIL + "\"");
+            execSync("git add .");
+            execSync("git commit -m \"Sync R2 files\" || echo \"No changes to commit\"");
+            execSync("git push origin r2-sync");
           })();
-          "
+          '
