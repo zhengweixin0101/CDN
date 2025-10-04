@@ -17,19 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Copy r2_sync.py to /tmp
-        run: cp .github/scripts/r2_sync.py /tmp/r2_sync.py
-
-      - name: Checkout r2-sync branch
-        run: |
-          git checkout r2-sync || git checkout --orphan r2-sync
-          git rm -rf . || true
-
-      - name: Restore r2_sync.py from /tmp
-        run: |
-          mkdir -p .github/scripts
-          mv /tmp/r2_sync.py .github/scripts/r2_sync.py
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -37,6 +24,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install boto3
+
+      - name: Checkout (or create) r2-sync branch
+        run: |
+          git checkout r2-sync || git checkout --orphan r2-sync
 
       - name: Sync R2 files
         env:
