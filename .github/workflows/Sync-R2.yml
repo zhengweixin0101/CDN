@@ -8,6 +8,7 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -15,20 +16,20 @@ jobs:
           ref: r2-sync
           fetch-depth: 0
 
-      - name: Set up Python and AWS CLI
+      - name: Set up Python & AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y python3 python3-pip
           pip3 install --upgrade awscli
 
       - name: Sync R2 files to branch
+        env:
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
+          BRANCH: r2-sync
         run: |
-          R2_BUCKET=${{ secrets.R2_BUCKET }}
-          R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
-          AWS_ACCESS_KEY_ID=${{ secrets.R2_KEY }}
-          AWS_SECRET_ACCESS_KEY=${{ secrets.R2_SECRET }}
-          BRANCH=r2-sync
-
           mkdir -p r2-files
 
           echo "Downloading files from R2..."
@@ -41,6 +42,7 @@ jobs:
           echo "Copying files to branch..."
           rsync -a --delete ./r2-files/ ./
 
+          echo "Committing changes..."
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
