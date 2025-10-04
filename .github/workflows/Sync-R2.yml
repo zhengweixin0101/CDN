@@ -1,50 +1,45 @@
 name: Sync R2 to Branch
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
+      - name: Checkout r2-sync branch
         uses: actions/checkout@v3
         with:
           ref: r2-sync
           fetch-depth: 0
 
-      - name: Set up Python & AWS CLI
+      - name: Install AWS CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3 python3-pip
-          pip3 install --upgrade awscli
+          sudo apt-get install -y awscli
 
-      - name: Sync R2 files to branch
+      - name: Clean branch
+        run: |
+          git rm -rf . || true
+          git clean -fdx
+
+      - name: Sync files from R2
         env:
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET }}
-          BRANCH: r2-sync
         run: |
           mkdir -p r2-files
+          aws s3 sync "s3://cdn" ./r2-files \
+            --endpoint-url https://3e074a499835faf39e26a69ca96198e9.r2.cloudflarestorage.com
+          cp -r r2-files/* . || true
 
-          echo "Downloading files from R2..."
-          aws s3 sync s3://$R2_BUCKET ./r2-files \
-            --endpoint-url https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com
-
-          echo "Switching to branch $BRANCH..."
-          git checkout $BRANCH
-
-          echo "Copying files to branch..."
-          rsync -a --delete ./r2-files/ ./
-
-          echo "Committing changes..."
+      - name: Commit and push
+        run: |
           git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          git config user.email "github-actions@users.noreply.github.com"
           git add .
-          git commit -m "Sync R2 files" || echo "No changes to commit"
-          git push origin $BRANCH
+          git commit -m "Sync from R2" || echo "No changes to commit"
+          git push origin r2-sync
