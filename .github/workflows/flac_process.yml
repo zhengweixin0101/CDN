@@ -1,0 +1,33 @@
+name: Auto Process Music Files
+
+on:
+  push:
+    paths:
+      - "music/*.flac"
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install mutagen
+
+      - name: Run music processor
+        run: python .github/scripts/process_flac.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add music/
+          git commit -m "🎵 Auto process new FLAC file(s)" || echo "No changes to commit"
+          git push
