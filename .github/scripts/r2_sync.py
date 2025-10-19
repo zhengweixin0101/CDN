@@ -1,6 +1,5 @@
 import os
 import boto3
-import shutil
 import hashlib
 
 ACCESS_KEY_ID = os.environ['R2_ACCESS_KEY_ID']

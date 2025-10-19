@@ -1,6 +1,7 @@
 name: Auto Process Music Files
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "music/*.flac"
