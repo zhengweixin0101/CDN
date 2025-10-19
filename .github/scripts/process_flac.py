@@ -16,8 +16,8 @@ def extract_flac_info(file_path):
     folder_path = os.path.join(MUSIC_DIR, folder_name)
     os.makedirs(folder_path, exist_ok=True)
 
-    new_flac_path = os.path.join(folder_path, f"{title}.flac")
-    shutil.copy2(file_path, new_flac_path)
+    new_flac_path = os.path.join(folder_path, f"{title}-{artist}.flac")
+    shutil.move(file_path, new_flac_path)
 
     cover_path = os.path.join(folder_path, "cover.jpg")
     for pic in audio.pictures:
