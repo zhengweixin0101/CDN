@@ -1,7 +1,17 @@
 [
   {
-    "title": "兰亭序",
+    "title": "稻香",
     "artist": "周杰伦",
-    "path": "music/兰亭序-周杰伦/兰亭序-周杰伦.flac"
+    "path": "music/稻香-周杰伦/稻香-周杰伦.flac"
+  },
+  {
+    "title": "告白气球",
+    "artist": "周杰伦",
+    "path": "music/告白气球-周杰伦/告白气球-周杰伦.flac"
+  },
+  {
+    "title": "反方向的钟",
+    "artist": "周杰伦",
+    "path": "music/反方向的钟-周杰伦/反方向的钟-周杰伦.flac"
   }
 ]
