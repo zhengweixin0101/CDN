@@ -46,7 +46,8 @@ def extract_flac_info(file_path):
         json.dump(info, f, ensure_ascii=False, indent=2)
 
     print(f"✅ Processed: {title} - {artist}")
-    return {"title": title, "artist": artist, "path": new_flac_path.replace("\\", "/")}
+    info_path = os.path.join(folder_path, "info.json")
+    return {"title": title, "artist": artist, "path": info_path.replace("\\", "/")}
 
 def load_music_list():
     if os.path.exists(LIST_FILE):
