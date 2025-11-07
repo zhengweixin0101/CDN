@@ -8,8 +8,8 @@ import io
 MUSIC_DIR = "music"
 LIST_FILE = os.path.join(MUSIC_DIR, "music_list.json")
 
-def compress_to_webp(image_path, quality=95):
-    """无损压缩图片为WebP格式"""
+def compress_to_webp(image_path, quality=80):
+    """智能压缩图片为WebP格式"""
     try:
         with Image.open(image_path) as img:
             if img.mode in ('RGBA', 'LA'):
@@ -20,15 +20,24 @@ def compress_to_webp(image_path, quality=95):
                 img = img.convert('RGB')
             
             webp_path = os.path.splitext(image_path)[0] + '.webp'
-            img.save(webp_path, 'WEBP', quality=quality, lossless=True)
+            img.save(webp_path, 'WEBP', quality=quality, optimize=True)
 
             original_size = os.path.getsize(image_path)
             webp_size = os.path.getsize(webp_path)
             compression_ratio = (1 - webp_size / original_size) * 100
             
-            print(f"压缩完成: {os.path.basename(image_path)} -> {os.path.basename(webp_path)}")
-            print(f"原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB, 压缩率: {compression_ratio:.1f}%")
+            # 如果WebP文件比原始文件大，删除WebP文件并返回原始路径
+            if webp_size > original_size:
+                os.remove(webp_path)
+                print(f"⚠️  压缩效果不佳，保留原文件: {os.path.basename(image_path)}")
+                print(f"   原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB")
+                return image_path
             
+            print(f"📊 压缩完成: {os.path.basename(image_path)} -> {os.path.basename(webp_path)}")
+            print(f"   原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB, 压缩率: {compression_ratio:.1f}%")
+            
+            # 删除原始文件（压缩成功）
+            os.remove(image_path)
             return webp_path
     except Exception as e:
         print(f"❌ 压缩失败 {image_path}: {e}")
