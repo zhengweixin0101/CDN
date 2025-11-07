@@ -20,7 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install mutagen
+        run: pip install mutagen Pillow
 
       - name: Run music processor
         run: python .github/scripts/process_flac.py
