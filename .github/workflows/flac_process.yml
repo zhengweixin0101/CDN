@@ -3,6 +3,8 @@ name: Auto Process Music Files
 on:
   workflow_dispatch:
   push:
+    branches:
+      - music
     paths:
       - "music/**"
 
@@ -13,6 +15,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: music
 
       - name: Setup Python
         uses: actions/setup-python@v5
