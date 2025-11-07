@@ -2,9 +2,37 @@ import os
 import json
 import shutil
 from mutagen.flac import FLAC
+from PIL import Image
+import io
 
 MUSIC_DIR = "music"
 LIST_FILE = os.path.join(MUSIC_DIR, "music_list.json")
+
+def compress_to_webp(image_path, quality=95):
+    """无损压缩图片为WebP格式"""
+    try:
+        with Image.open(image_path) as img:
+            if img.mode in ('RGBA', 'LA'):
+                background = Image.new('RGB', img.size, (255, 255, 255))
+                background.paste(img, mask=img.split()[-1])
+                img = background
+            elif img.mode != 'RGB':
+                img = img.convert('RGB')
+            
+            webp_path = os.path.splitext(image_path)[0] + '.webp'
+            img.save(webp_path, 'WEBP', quality=quality, lossless=True)
+
+            original_size = os.path.getsize(image_path)
+            webp_size = os.path.getsize(webp_path)
+            compression_ratio = (1 - webp_size / original_size) * 100
+            
+            print(f"压缩完成: {os.path.basename(image_path)} -> {os.path.basename(webp_path)}")
+            print(f"原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB, 压缩率: {compression_ratio:.1f}%")
+            
+            return webp_path
+    except Exception as e:
+        print(f"❌ 压缩失败 {image_path}: {e}")
+        return None
 
 def extract_flac_info(file_path):
     audio = FLAC(file_path)
@@ -24,6 +52,10 @@ def extract_flac_info(file_path):
         if pic.type == 3:
             with open(cover_path, "wb") as f:
                 f.write(pic.data)
+
+            webp_path = compress_to_webp(cover_path)
+            if webp_path:
+                cover_path = webp_path
             break
     else:
         open(cover_path, "wb").close()
