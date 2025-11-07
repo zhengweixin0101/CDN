@@ -3,7 +3,7 @@ name: Sync R2 Bucket to r2-sync Branch
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 4 * * 1'
 
 jobs:
   sync-r2:
