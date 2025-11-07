@@ -158,5 +158,10 @@
     "title": "海阔天空",
     "artist": "BEYOND",
     "path": "music/海阔天空-BEYOND/info.json"
+  },
+  {
+    "title": "爱错",
+    "artist": "王力宏",
+    "path": "music/爱错-王力宏/info.json"
   }
 ]
