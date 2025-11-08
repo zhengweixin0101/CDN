@@ -5,7 +5,7 @@ from mutagen.flac import FLAC
 from PIL import Image
 import io
 
-MUSIC_DIR = "music"
+MUSIC_DIR = "."
 LIST_FILE = os.path.join(MUSIC_DIR, "music_list.json")
 
 def compress_to_webp(image_path, quality=80):
