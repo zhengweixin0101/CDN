@@ -168,5 +168,30 @@
     "title": "园游会",
     "artist": "周杰伦",
     "path": "music/园游会-周杰伦/info.json"
+  },
+  {
+    "title": "好想好想你",
+    "artist": "G.E.M. 邓紫棋",
+    "path": "music/好想好想你-G.E.M. 邓紫棋/info.json"
+  },
+  {
+    "title": "花海",
+    "artist": "周杰伦",
+    "path": "music/花海-周杰伦/info.json"
+  },
+  {
+    "title": "爱立刻",
+    "artist": "方大同",
+    "path": "music/爱立刻-方大同/info.json"
+  },
+  {
+    "title": "爱爱爱",
+    "artist": "方大同",
+    "path": "music/爱爱爱-方大同/info.json"
+  },
+  {
+    "title": "特别的人",
+    "artist": "方大同",
+    "path": "music/特别的人-方大同/info.json"
   }
 ]
