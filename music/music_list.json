@@ -163,5 +163,10 @@
     "title": "凑热闹",
     "artist": "BY2",
     "path": "music/凑热闹-BY2/info.json"
+  },
+  {
+    "title": "园游会",
+    "artist": "周杰伦",
+    "path": "music/园游会-周杰伦/info.json"
   }
 ]
