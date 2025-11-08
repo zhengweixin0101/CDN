@@ -7,7 +7,6 @@ import io
 
 MUSIC_DIR = "music"
 LIST_FILE = os.path.join(MUSIC_DIR, "music_list.json")
-ROOT_DIR = "."
 
 def compress_to_webp(image_path, quality=80):
     """智能压缩图片为WebP格式"""
@@ -127,11 +126,11 @@ def sync_music_list_and_dirs(music_list):
     return music_list
 
 def main():
-    root_flac_files = [f for f in os.listdir(ROOT_DIR) if f.endswith(".flac")]
+    flac_files = [f for f in os.listdir(MUSIC_DIR) if f.endswith(".flac")]
     music_list = load_music_list()
 
-    for f in root_flac_files:
-        file_path = os.path.join(ROOT_DIR, f)
+    for f in flac_files:
+        file_path = os.path.join(MUSIC_DIR, f)
         new_entry = extract_flac_info(file_path)
         if not any(item['path'] == new_entry['path'] for item in music_list):
             music_list.append(new_entry)
