@@ -6,7 +6,7 @@ on:
     branches:
       - music
     paths:
-      - "music/*.flac"
+      - "music/**"
 
 jobs:
   process:
