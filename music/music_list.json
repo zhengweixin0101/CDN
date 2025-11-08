@@ -193,5 +193,15 @@
     "title": "特别的人",
     "artist": "方大同",
     "path": "music/特别的人-方大同/info.json"
+  },
+  {
+    "title": "水手",
+    "artist": "郑智化",
+    "path": "music/水手-郑智化/info.json"
+  },
+  {
+    "title": "最后一页",
+    "artist": "江语晨",
+    "path": "music/最后一页-江语晨/info.json"
   }
 ]
