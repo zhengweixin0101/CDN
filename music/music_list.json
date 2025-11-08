@@ -153,5 +153,15 @@
     "title": "海阔天空",
     "artist": "BEYOND",
     "path": "music/海阔天空-BEYOND/info.json"
+  },
+  {
+    "title": "有何不可",
+    "artist": "许嵩",
+    "path": "music/有何不可-许嵩/info.json"
+  },
+  {
+    "title": "凑热闹",
+    "artist": "BY2",
+    "path": "music/凑热闹-BY2/info.json"
   }
 ]
