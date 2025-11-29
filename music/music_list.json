@@ -228,5 +228,20 @@
     "title": "奢香夫人",
     "artist": "凤凰传奇",
     "path": "music/奢香夫人-凤凰传奇/info.json"
+  },
+  {
+    "title": "如果爱忘了",
+    "artist": "汪苏泷",
+    "path": "music/如果爱忘了-汪苏泷/info.json"
+  },
+  {
+    "title": "演员",
+    "artist": "薛之谦",
+    "path": "music/演员-薛之谦/info.json"
+  },
+  {
+    "title": "唯一",
+    "artist": "G.E.M. 邓紫棋",
+    "path": "music/唯一-G.E.M. 邓紫棋/info.json"
   }
 ]
