@@ -208,5 +208,25 @@
     "title": "把回忆拼好给你",
     "artist": "cici_",
     "path": "music/把回忆拼好给你-cici_/info.json"
+  },
+  {
+    "title": "暮色回响",
+    "artist": "张韶涵",
+    "path": "music/暮色回响-张韶涵/info.json"
+  },
+  {
+    "title": "其实",
+    "artist": "薛之谦",
+    "path": "music/其实-薛之谦/info.json"
+  },
+  {
+    "title": "爱在西元前",
+    "artist": "周杰伦",
+    "path": "music/爱在西元前-周杰伦/info.json"
+  },
+  {
+    "title": "奢香夫人",
+    "artist": "凤凰传奇",
+    "path": "music/奢香夫人-凤凰传奇/info.json"
   }
 ]
