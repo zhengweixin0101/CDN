@@ -1,18 +1,8 @@
 [
   {
-    "title": "一笑倾城",
-    "artist": "汪苏泷",
-    "path": "music/一笑倾城-汪苏泷/info.json"
-  },
-  {
     "title": "蒲公英的约定",
     "artist": "周杰伦",
     "path": "music/蒲公英的约定-周杰伦/info.json"
-  },
-  {
-    "title": "万有引力",
-    "artist": "汪苏泷",
-    "path": "music/万有引力-汪苏泷/info.json"
   },
   {
     "title": "晴天",
@@ -83,6 +73,16 @@
     "title": "光辉岁月",
     "artist": "BEYOND",
     "path": "music/光辉岁月-BEYOND/info.json"
+  },
+  {
+    "title": "一笑倾城",
+    "artist": "汪苏泷",
+    "path": "music/一笑倾城-汪苏泷/info.json"
+  },
+  {
+    "title": "万有引力",
+    "artist": "汪苏泷",
+    "path": "music/万有引力-汪苏泷/info.json"
   },
   {
     "title": "孤独患者",
