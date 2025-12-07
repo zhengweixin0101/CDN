@@ -258,5 +258,30 @@
     "title": "Try Everything",
     "artist": "Shakira",
     "path": "music/Try Everything-Shakira/info.json"
+  },
+  {
+    "title": "Take Me Hand",
+    "artist": "DAISHI DANCE",
+    "path": "music/Take Me Hand-DAISHI DANCE/info.json"
+  },
+  {
+    "title": "Jar Of Love",
+    "artist": "曲婉婷",
+    "path": "music/Jar Of Love-曲婉婷/info.json"
+  },
+  {
+    "title": "Teeth",
+    "artist": "5 Seconds Of Summer",
+    "path": "music/Teeth-5 Seconds Of Summer/info.json"
+  },
+  {
+    "title": "Shape of You",
+    "artist": "Ed Sheeran",
+    "path": "music/Shape of You-Ed Sheeran/info.json"
+  },
+  {
+    "title": "Payphone",
+    "artist": "Maroon 5",
+    "path": "music/Payphone-Maroon 5/info.json"
   }
 ]
