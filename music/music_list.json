@@ -243,5 +243,20 @@
     "title": "唯一",
     "artist": "G.E.M. 邓紫棋",
     "path": "music/唯一-G.E.M. 邓紫棋/info.json"
+  },
+  {
+    "title": "再见",
+    "artist": "G.E.M. 邓紫棋",
+    "path": "music/再见-G.E.M. 邓紫棋/info.json"
+  },
+  {
+    "title": "明明就",
+    "artist": "周杰伦",
+    "path": "music/明明就-周杰伦/info.json"
+  },
+  {
+    "title": "Try Everything",
+    "artist": "Shakira",
+    "path": "music/Try Everything-Shakira/info.json"
   }
 ]
