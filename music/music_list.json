@@ -283,5 +283,30 @@
     "title": "Payphone",
     "artist": "Maroon 5",
     "path": "music/Payphone-Maroon 5/info.json"
+  },
+  {
+    "title": "第57次取消发送",
+    "artist": "菲菲公主",
+    "path": "music/第57次取消发送-菲菲公主/info.json"
+  },
+  {
+    "title": "红尘客栈",
+    "artist": "周杰伦",
+    "path": "music/红尘客栈-周杰伦/info.json"
+  },
+  {
+    "title": "可能",
+    "artist": "程响",
+    "path": "music/可能-程响/info.json"
+  },
+  {
+    "title": "爱情转移",
+    "artist": "陈奕迅",
+    "path": "music/爱情转移-陈奕迅/info.json"
+  },
+  {
+    "title": "起风了",
+    "artist": "周深",
+    "path": "music/起风了-周深/info.json"
   }
 ]
