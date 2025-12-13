@@ -308,5 +308,30 @@
     "title": "起风了",
     "artist": "周深",
     "path": "music/起风了-周深/info.json"
+  },
+  {
+    "title": "偏爱",
+    "artist": "张芸京",
+    "path": "music/偏爱-张芸京/info.json"
+  },
+  {
+    "title": "年轮",
+    "artist": "张碧晨",
+    "path": "music/年轮-张碧晨/info.json"
+  },
+  {
+    "title": "心墙",
+    "artist": "郭静",
+    "path": "music/心墙-郭静/info.json"
+  },
+  {
+    "title": "Faded",
+    "artist": "Alan Walker",
+    "path": "music/Faded-Alan Walker/info.json"
+  },
+  {
+    "title": "爱我还是他",
+    "artist": "陶喆",
+    "path": "music/爱我还是他-陶喆/info.json"
   }
 ]
