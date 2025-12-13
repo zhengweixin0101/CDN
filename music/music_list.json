@@ -333,5 +333,20 @@
     "title": "爱我还是他",
     "artist": "陶喆",
     "path": "music/爱我还是他-陶喆/info.json"
+  },
+  {
+    "title": "沦陷",
+    "artist": "王靖雯",
+    "path": "music/沦陷-王靖雯/info.json"
+  },
+  {
+    "title": "听",
+    "artist": "方大同",
+    "path": "music/听-方大同/info.json"
+  },
+  {
+    "title": "群青",
+    "artist": "YOASOBI",
+    "path": "music/群青-YOASOBI/info.json"
   }
 ]
