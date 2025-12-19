@@ -1,10 +1,16 @@
 import os
 import json
+import shutil
 from PIL import Image
 from mutagen.flac import FLAC
 
 BASE_DIR = "music"
+MUSIC_DIR = os.path.join(BASE_DIR, "flac")
+META_DIR = os.path.join(BASE_DIR, "meta")
 LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
+
+os.makedirs(MUSIC_DIR, exist_ok=True)
+os.makedirs(META_DIR, exist_ok=True)
 
 
 def safe_name(s: str) -> str:
@@ -36,6 +42,7 @@ def compress_to_webp(image_path, quality=80):
         return image_path
 
 
+# 处理单个 FLAC
 def process_flac(flac_path: str):
     audio = FLAC(flac_path)
 
@@ -44,7 +51,7 @@ def process_flac(flac_path: str):
     album = audio.get("album", ["Unknown Album"])[0]
 
     folder_name = safe_name(f"{title}-{artist}")
-    song_dir = os.path.join(BASE_DIR, folder_name)
+    song_dir = os.path.join(META_DIR, folder_name)
     os.makedirs(song_dir, exist_ok=True)
 
     # 封面
@@ -79,39 +86,44 @@ def process_flac(flac_path: str):
     return folder_name, info, info_path.replace("\\", "/")
 
 
+# 主流程
 def main():
-    flac_map = {}
+    valid_meta = set()
     music_list = []
 
     # 扫描 flac
-    for root, _, files in os.walk(BASE_DIR):
+    for root, _, files in os.walk(MUSIC_DIR):
         for f in files:
-            if f.lower().endswith(".flac"):
-                flac_path = os.path.join(root, f)
+            if not f.lower().endswith(".flac"):
+                continue
+
+            flac_path = os.path.join(root, f)
+            print(f"🎵 处理 FLAC: {flac_path}")
+
+            try:
                 folder, info, info_path = process_flac(flac_path)
-                flac_map[folder] = flac_path
+                valid_meta.add(folder)
 
                 music_list.append({
                     "title": info["title"],
                     "artist": info["artist"],
                     "path": info_path,
                 })
+            except Exception as e:
+                print("❌ 处理失败:", e)
 
-    # 清理多余目录
-    for name in os.listdir(BASE_DIR):
-        folder_path = os.path.join(BASE_DIR, name)
-        if os.path.isdir(folder_path) and name not in flac_map:
-            print(f"🗑️ 删除无效歌曲目录: {name}")
-            for root, dirs, files in os.walk(folder_path, topdown=False):
-                for f in files:
-                    os.remove(os.path.join(root, f))
-                for d in dirs:
-                    os.rmdir(os.path.join(root, d))
-            os.rmdir(folder_path)
+    # 清理无效 meta 文件夹
+    for name in os.listdir(META_DIR):
+        path = os.path.join(META_DIR, name)
+        if os.path.isdir(path) and name not in valid_meta:
+            print(f"🗑️ 清理孤儿 meta: {name}")
+            shutil.rmtree(path)
 
-    # 生成 music_list.json
+    # 重建 music_list.json
     with open(LIST_FILE, "w", encoding="utf-8") as f:
         json.dump(music_list, f, ensure_ascii=False, indent=2)
+
+    print(f"\n✅ 完成：共处理 {len(music_list)} 首歌")
 
 
 if __name__ == "__main__":
