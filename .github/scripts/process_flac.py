@@ -51,7 +51,7 @@ def webdav_mkdir(path):
         url = f"{WEBDAV_URL}/{quote(subdir)}"
         r = requests.request("MKCOL", url, auth=(WEBDAV_USER, WEBDAV_PASS))
         if r.status_code not in (201, 405):
-            raise Exception(f"MKCOL failed: {subdir}")
+            raise Exception(f"MKCOL failed: {subdir} ({r.status_code})")
 
 def upload_dir(local_dir, remote_dir):
     remote_dir = remote_dir.strip("/")
@@ -61,11 +61,11 @@ def upload_dir(local_dir, remote_dir):
         for file in files:
             local_path = os.path.join(root, file)
             rel = os.path.relpath(local_path, local_dir)
-            remote_path = f"{remote_dir}/{rel}".replace("\\", "/")
-            remote_path = remote_path.strip("/")
+            remote_path = f"{remote_dir}/{rel}".replace("\\", "/").strip("/")
 
             parent = os.path.dirname(remote_path)
-            webdav_mkdir(parent)
+            if parent:
+                webdav_mkdir(parent)
 
             url = f"{WEBDAV_URL}/{quote(remote_path)}"
             with open(local_path, "rb") as f:
