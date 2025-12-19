@@ -9,6 +9,9 @@ on:
 jobs:
   process:
     runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
