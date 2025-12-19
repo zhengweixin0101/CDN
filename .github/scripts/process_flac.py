@@ -44,34 +44,21 @@ def compress_to_webp(image_path, quality=80):
 
 
 # WebDAV
-def webdav_mkdir(path):
-    parts = path.split("/")
-    for i in range(1, len(parts)+1):
-        subdir = "/".join(parts[:i])
-        url = f"{WEBDAV_URL}/{quote(subdir)}"
-        r = requests.request("MKCOL", url, auth=(WEBDAV_USER, WEBDAV_PASS))
-        if r.status_code not in (201, 405):
-            raise Exception(f"MKCOL failed: {subdir} ({r.status_code})")
+def upload(local_flac: str, remote_base: str):
+    filename = os.path.basename(local_flac)
+    remote_path = f"{remote_base}/{filename}".strip("/")
+    url = f"{WEBDAV_URL}/{quote(remote_path)}"
 
-def upload_dir(local_dir, remote_dir):
-    remote_dir = remote_dir.strip("/")
-    webdav_mkdir(remote_dir)
+    print(f"🔗 上传 URL: {url}")
 
-    for root, _, files in os.walk(local_dir):
-        for file in files:
-            local_path = os.path.join(root, file)
-            rel = os.path.relpath(local_path, local_dir)
-            remote_path = f"{remote_dir}/{rel}".replace("\\", "/").strip("/")
-
-            parent = os.path.dirname(remote_path)
-            if parent:
-                webdav_mkdir(parent)
-
-            url = f"{WEBDAV_URL}/{quote(remote_path)}"
-            with open(local_path, "rb") as f:
-                r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
-                if r.status_code not in (200, 201, 204):
-                    raise Exception(f"Upload failed: {remote_path} ({r.status_code})")
+    with open(local_flac, "rb") as f:
+        r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
+        if r.status_code in (200, 201, 204):
+            print("✅ 上传成功")
+            return True
+        else:
+            print(f"❌ 上传失败: {r.status_code}")
+            return False
 
 
 # 处理单个 flac
@@ -165,15 +152,13 @@ def main():
         try:
             result = process_flac(src)
 
-            # WebDAV 上传
-            upload_dir(
-                result["folder"],
-                f"{WEBDAV_UPLOAD_PATH}/{result['folder_name']}",
-            )
-
-            # 上传成功删除原flac
-            os.remove(result["renamed_flac"])
-            print("✅ 上传成功，已删除本地 FLAC")
+            # 上传WebDAV并删除
+            if upload(
+                result["renamed_flac"],
+                WEBDAV_UPLOAD_PATH,
+            ):
+                os.remove(result["renamed_flac"])
+                print("✅ WebDAV 上传成功，已删除本地 FLAC")
 
             # 写入 music_list
             if not any(
