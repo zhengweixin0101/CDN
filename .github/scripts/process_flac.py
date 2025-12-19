@@ -9,6 +9,7 @@ BASE_DIR = "music"
 LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
 
 WEBDAV_URL = os.environ.get("WEBDAV_URL").rstrip("/")
+WEBDAV_UPLOAD_PATH = os.environ.get("WEBDAV_UPLOAD_PATH", "music").strip("/")
 WEBDAV_USER = os.environ.get("WEBDAV_USER")
 WEBDAV_PASS = os.environ.get("WEBDAV_PASS")
 
@@ -168,7 +169,7 @@ def main():
             # WebDAV 上传
             upload_dir(
                 result["folder"],
-                f"music/{result['folder_name']}",
+                f"{WEBDAV_UPLOAD_PATH}/{result['folder_name']}",
             )
 
             # 上传成功删除原flac
