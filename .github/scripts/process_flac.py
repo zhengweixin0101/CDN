@@ -1,143 +1,196 @@
 import os
 import json
 import shutil
+import requests
 from mutagen.flac import FLAC
 from PIL import Image
-import io
 
-MUSIC_DIR = "music"
-LIST_FILE = os.path.join(MUSIC_DIR, "music_list.json")
+BASE_DIR = "music"
+LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
 
+WEBDAV_URL = os.environ.get("WEBDAV_URL").rstrip("/")
+WEBDAV_USER = os.environ.get("WEBDAV_USER")
+WEBDAV_PASS = os.environ.get("WEBDAV_PASS")
+
+def safe_name(s: str) -> str:
+    return s.replace("/", "_").replace("\\", "_").strip()
+
+
+# 封面压缩
 def compress_to_webp(image_path, quality=80):
-    """智能压缩图片为WebP格式"""
     try:
         with Image.open(image_path) as img:
-            if img.mode in ('RGBA', 'LA'):
-                background = Image.new('RGB', img.size, (255, 255, 255))
-                background.paste(img, mask=img.split()[-1])
-                img = background
-            elif img.mode != 'RGB':
-                img = img.convert('RGB')
-            
-            webp_path = os.path.splitext(image_path)[0] + '.webp'
-            img.save(webp_path, 'WEBP', quality=quality, optimize=True)
+            if img.mode in ("RGBA", "LA"):
+                bg = Image.new("RGB", img.size, (255, 255, 255))
+                bg.paste(img, mask=img.split()[-1])
+                img = bg
+            elif img.mode != "RGB":
+                img = img.convert("RGB")
 
-            original_size = os.path.getsize(image_path)
-            webp_size = os.path.getsize(webp_path)
-            compression_ratio = (1 - webp_size / original_size) * 100
-            
-            # 如果WebP文件比原始文件大，删除WebP文件并返回原始路径
-            if webp_size > original_size:
-                os.remove(webp_path)
-                print(f"⚠️  压缩效果不佳，保留原文件: {os.path.basename(image_path)}")
-                print(f"   原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB")
-                return image_path
-            
-            print(f"📊 压缩完成: {os.path.basename(image_path)} -> {os.path.basename(webp_path)}")
-            print(f"   原始大小: {original_size / 1024:.1f}KB, WebP大小: {webp_size / 1024:.1f}KB, 压缩率: {compression_ratio:.1f}%")
-            
-            # 删除原始文件（压缩成功）
-            os.remove(image_path)
-            return webp_path
+            webp_path = os.path.splitext(image_path)[0] + ".webp"
+            img.save(webp_path, "WEBP", quality=quality, optimize=True)
+
+        if os.path.getsize(webp_path) >= os.path.getsize(image_path):
+            os.remove(webp_path)
+            return image_path
+
+        os.remove(image_path)
+        return webp_path
     except Exception as e:
-        print(f"❌ 压缩失败 {image_path}: {e}")
-        return None
+        print("❌ 封面压缩失败:", e)
+        return image_path
 
-def extract_flac_info(file_path):
-    audio = FLAC(file_path)
-    title = audio.get('title', [os.path.splitext(os.path.basename(file_path))[0]])[0]
-    artist = audio.get('artist', ['Unknown Artist'])[0]
-    album = audio.get('album', ['Unknown Album'])[0]
 
-    folder_name = f"{title}-{artist}".replace("/", "_")
-    folder_path = os.path.join(MUSIC_DIR, folder_name)
-    os.makedirs(folder_path, exist_ok=True)
+# WebDAV
+def webdav_mkdir(path):
+    r = requests.request(
+        "MKCOL",
+        f"{WEBDAV_URL}/{path}",
+        auth=(WEBDAV_USER, WEBDAV_PASS),
+    )
+    if r.status_code not in (201, 405):
+        raise Exception(f"MKCOL failed: {path}")
 
-    new_flac_path = os.path.join(folder_path, f"{title}-{artist}.flac")
-    shutil.move(file_path, new_flac_path)
 
-    cover_path = os.path.join(folder_path, "cover.jpg")
+def upload_dir(local_dir, remote_dir):
+    webdav_mkdir(remote_dir)
+
+    for root, _, files in os.walk(local_dir):
+        for file in files:
+            local_path = os.path.join(root, file)
+            rel = os.path.relpath(local_path, local_dir)
+            remote_path = f"{remote_dir}/{rel}".replace("\\", "/")
+
+            parent = os.path.dirname(remote_path)
+            webdav_mkdir(parent)
+
+            with open(local_path, "rb") as f:
+                r = requests.put(
+                    f"{WEBDAV_URL}/{remote_path}",
+                    data=f,
+                    auth=(WEBDAV_USER, WEBDAV_PASS),
+                )
+                if r.status_code not in (200, 201, 204):
+                    raise Exception(f"Upload failed: {remote_path}")
+
+
+# 处理单个 flac
+def process_flac(flac_path):
+    audio = FLAC(flac_path)
+
+    title = audio.get("title", [os.path.splitext(os.path.basename(flac_path))[0]])[0]
+    artist = audio.get("artist", ["Unknown Artist"])[0]
+    album = audio.get("album", ["Unknown Album"])[0]
+
+    folder_name = safe_name(f"{title}-{artist}")
+    renamed_flac = os.path.join(BASE_DIR, f"{folder_name}.flac")
+
+    # 重命名
+    if flac_path != renamed_flac:
+        os.rename(flac_path, renamed_flac)
+        print(f"✏️ 重命名: {os.path.basename(flac_path)} → {folder_name}.flac")
+
+    song_dir = os.path.join(BASE_DIR, folder_name)
+    os.makedirs(song_dir, exist_ok=True)
+
+    # 复制 flac
+    flac_dst = os.path.join(song_dir, f"{folder_name}.flac")
+    if not os.path.exists(flac_dst):
+        shutil.copy2(renamed_flac, flac_dst)
+
+    # 封面
+    cover_path = ""
     for pic in audio.pictures:
         if pic.type == 3:
-            with open(cover_path, "wb") as f:
+            jpg = os.path.join(song_dir, "cover.jpg")
+            with open(jpg, "wb") as f:
                 f.write(pic.data)
-
-            webp_path = compress_to_webp(cover_path)
-            if webp_path:
-                cover_path = webp_path
+            cover_path = compress_to_webp(jpg)
             break
-    else:
-        open(cover_path, "wb").close()
 
-    lyrics_path = os.path.join(folder_path, "lyrics.lrc")
-    lyrics = audio.get("lyrics", [""])[0]
+    # 歌词
+    lyrics_path = os.path.join(song_dir, "lyrics.lrc")
     with open(lyrics_path, "w", encoding="utf-8") as f:
-        f.write(lyrics)
+        f.write(audio.get("lyrics", [""])[0])
 
+    # info.json
     info = {
         "title": title,
         "artist": artist,
         "album": album,
-        "music_path": new_flac_path.replace("\\", "/"),
+        "music_path": flac_dst.replace("\\", "/"),
         "lyrics_path": lyrics_path.replace("\\", "/"),
-        "cover_path": cover_path.replace("\\", "/")
+        "cover_path": cover_path.replace("\\", "/") if cover_path else "",
     }
-    info_path = os.path.join(folder_path, "info.json")
+
+    info_path = os.path.join(song_dir, "info.json")
     with open(info_path, "w", encoding="utf-8") as f:
         json.dump(info, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ Processed: {title} - {artist}")
-    info_path = os.path.join(folder_path, "info.json")
-    return {"title": title, "artist": artist, "path": info_path.replace("\\", "/")}
+    return {
+        "folder": song_dir,
+        "folder_name": folder_name,
+        "renamed_flac": renamed_flac,
+        "info": info,
+        "info_path": info_path.replace("\\", "/"),
+    }
 
+
+# music_list
 def load_music_list():
-    if os.path.exists(LIST_FILE):
-        try:
-            with open(LIST_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            return []
-    return []
+    if not os.path.exists(LIST_FILE):
+        return []
+    with open(LIST_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-def save_music_list(music_list):
+
+def save_music_list(data):
     with open(LIST_FILE, "w", encoding="utf-8") as f:
-        json.dump(music_list, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-def sync_music_list_and_dirs(music_list):
-    dirs = [d for d in os.listdir(MUSIC_DIR) if os.path.isdir(os.path.join(MUSIC_DIR, d))]
 
-    updated_list = []
-    for item in music_list:
-        folder_name = f"{item['title']}-{item['artist']}".replace("/", "_")
-        folder_path = os.path.join(MUSIC_DIR, folder_name)
-        if os.path.exists(folder_path):
-            updated_list.append(item)
-        else:
-            print(f"🗑 Remove missing folder from music_list.json: {folder_name}")
-    music_list = updated_list
-
-    current_paths = [f"{item['title']}-{item['artist']}".replace("/", "_") for item in music_list]
-    for folder in dirs:
-        if folder not in current_paths:
-            folder_path = os.path.join(MUSIC_DIR, folder)
-            shutil.rmtree(folder_path)
-            print(f"🗑 Deleted folder from repo: {folder}")
-
-    return music_list
-
+# 主流程
 def main():
-    flac_files = [f for f in os.listdir(MUSIC_DIR) if f.endswith(".flac")]
     music_list = load_music_list()
 
-    for f in flac_files:
-        file_path = os.path.join(MUSIC_DIR, f)
-        new_entry = extract_flac_info(file_path)
-        if not any(item['path'] == new_entry['path'] for item in music_list):
-            music_list.append(new_entry)
+    flacs = [
+        f for f in os.listdir(BASE_DIR)
+        if f.lower().endswith(".flac")
+    ]
 
-    music_list = sync_music_list_and_dirs(music_list)
+    for flac in flacs:
+        src = os.path.join(BASE_DIR, flac)
+        print(f"🎵 发现 FLAC: {flac}")
+
+        try:
+            result = process_flac(src)
+
+            # WebDAV 上传
+            upload_dir(
+                result["folder"],
+                f"music/{result['folder_name']}",
+            )
+
+            # 上传成功删除原flac
+            os.remove(result["renamed_flac"])
+            print("✅ 上传成功，已删除本地 FLAC")
+
+            # 写入 music_list
+            if not any(
+                item["path"] == result["info_path"]
+                for item in music_list
+            ):
+                music_list.append({
+                    "title": result["info"]["title"],
+                    "artist": result["info"]["artist"],
+                    "path": result["info_path"],
+                })
+
+        except Exception as e:
+            print("❌ 上传webdav失败:", e)
 
     save_music_list(music_list)
+
 
 if __name__ == "__main__":
     main()
