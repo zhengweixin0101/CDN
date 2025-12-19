@@ -2,8 +2,9 @@ import os
 import json
 import shutil
 import requests
-from mutagen.flac import FLAC
 from PIL import Image
+from mutagen.flac import FLAC
+from urllib.parse import quote
 
 BASE_DIR = "music"
 LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
