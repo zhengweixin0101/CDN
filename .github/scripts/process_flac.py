@@ -4,12 +4,12 @@ import shutil
 from PIL import Image
 from mutagen.flac import FLAC
 
-BASE_DIR = "music"
-MUSIC_DIR = os.path.join(BASE_DIR, "flac")
-META_DIR = os.path.join(BASE_DIR, "meta")
-LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
+# 路径配置
+REPO_ROOT = os.getcwd()
+FLAC_SCAN_DIR = os.path.join(REPO_ROOT, "music")
+META_DIR = os.path.join(REPO_ROOT, "meta")
+LIST_FILE = os.path.join(REPO_ROOT, "music_list.json")
 
-os.makedirs(MUSIC_DIR, exist_ok=True)
 os.makedirs(META_DIR, exist_ok=True)
 
 
@@ -91,13 +91,13 @@ def main():
     valid_meta = set()
     music_list = []
 
-    # 扫描 flac
-    for root, _, files in os.walk(MUSIC_DIR):
-        for f in files:
-            if not f.lower().endswith(".flac"):
+    # 扫描所有 flac
+    for root, _, files in os.walk(FLAC_SCAN_DIR):
+        for name in files:
+            if not name.lower().endswith(".flac"):
                 continue
 
-            flac_path = os.path.join(root, f)
+            flac_path = os.path.join(root, name)
             print(f"🎵 处理 FLAC: {flac_path}")
 
             try:
@@ -112,7 +112,7 @@ def main():
             except Exception as e:
                 print("❌ 处理失败:", e)
 
-    # 清理无效 meta 文件夹
+    # 清理无效 meta
     for name in os.listdir(META_DIR):
         path = os.path.join(META_DIR, name)
         if os.path.isdir(path) and name not in valid_meta:
