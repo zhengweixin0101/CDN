@@ -1,18 +1,12 @@
 import os
 import json
 import shutil
-import requests
 from PIL import Image
 from mutagen.flac import FLAC
-from urllib.parse import quote
 
 BASE_DIR = "music"
 LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
 
-WEBDAV_URL = os.environ.get("WEBDAV_URL").rstrip("/")
-WEBDAV_UPLOAD_PATH = os.environ.get("WEBDAV_UPLOAD_PATH", "music").strip("/")
-WEBDAV_USER = os.environ.get("WEBDAV_USER")
-WEBDAV_PASS = os.environ.get("WEBDAV_PASS")
 
 def safe_name(s: str) -> str:
     return s.replace("/", "_").replace("\\", "_").strip()
@@ -41,24 +35,6 @@ def compress_to_webp(image_path, quality=80):
     except Exception as e:
         print("❌ 封面压缩失败:", e)
         return image_path
-
-
-# WebDAV
-def upload(local_flac: str, remote_base: str):
-    filename = os.path.basename(local_flac)
-    remote_path = f"{remote_base}/{filename}".strip("/")
-    url = f"{WEBDAV_URL}/{quote(remote_path)}"
-
-    print(f"🔗 上传 URL: {url}")
-
-    with open(local_flac, "rb") as f:
-        r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
-        if r.status_code in (200, 201, 204):
-            print("✅ 上传成功")
-            return True
-        else:
-            print(f"❌ 上传失败: {r.status_code}")
-            return False
 
 
 # 处理单个 flac
@@ -115,9 +91,7 @@ def process_flac(flac_path):
         json.dump(info, f, ensure_ascii=False, indent=2)
 
     return {
-        "folder": song_dir,
         "folder_name": folder_name,
-        "renamed_flac": renamed_flac,
         "info": info,
         "info_path": info_path.replace("\\", "/"),
     }
@@ -152,15 +126,6 @@ def main():
         try:
             result = process_flac(src)
 
-            # 上传WebDAV并删除
-            if upload(
-                result["renamed_flac"],
-                WEBDAV_UPLOAD_PATH,
-            ):
-                os.remove(result["renamed_flac"])
-                print("✅ WebDAV 上传成功，已删除本地 FLAC")
-
-            # 写入 music_list
             if not any(
                 item["path"] == result["info_path"]
                 for item in music_list
@@ -172,7 +137,7 @@ def main():
                 })
 
         except Exception as e:
-            print("❌ 上传webdav失败:", e)
+            print("❌ 处理失败:", e)
 
     save_music_list(music_list)
 
