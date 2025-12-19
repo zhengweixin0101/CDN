@@ -44,21 +44,28 @@ def compress_to_webp(image_path, quality=80):
 
 
 # WebDAV
+def encode_webdav_path(path: str) -> str:
+    return "/".join(quote(p) for p in path.split("/"))
+
 def upload(local_flac: str, remote_base: str):
     filename = os.path.basename(local_flac)
     remote_path = f"{remote_base}/{filename}".strip("/")
-    url = f"{WEBDAV_URL}/{quote(remote_path)}"
 
-    print(f"🔗 上传 URL: {url}")
+    url = f"{WEBDAV_URL}/{encode_webdav_path(remote_path)}"
+    print(f"🔗 WebDAV PUT → {url}")
 
     with open(local_flac, "rb") as f:
-        r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
-        if r.status_code in (200, 201, 204):
-            print("✅ 上传成功")
-            return True
-        else:
-            print(f"❌ 上传失败: {r.status_code}")
-            return False
+        r = requests.put(
+            url,
+            data=f,
+            auth=(WEBDAV_USER, WEBDAV_PASS),
+            timeout=300,
+        )
+
+    if r.status_code in (200, 201, 204):
+        return True
+    else:
+        raise Exception(f"Upload failed ({r.status_code})")
 
 
 # 处理单个 flac
