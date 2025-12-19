@@ -44,16 +44,16 @@ def compress_to_webp(image_path, quality=80):
 
 # WebDAV
 def webdav_mkdir(path):
-    r = requests.request(
-        "MKCOL",
-        f"{WEBDAV_URL}/{path}",
-        auth=(WEBDAV_USER, WEBDAV_PASS),
-    )
-    if r.status_code not in (201, 405):
-        raise Exception(f"MKCOL failed: {path}")
-
+    parts = path.split("/")
+    for i in range(1, len(parts)+1):
+        subdir = "/".join(parts[:i])
+        url = f"{WEBDAV_URL}/{quote(subdir)}"
+        r = requests.request("MKCOL", url, auth=(WEBDAV_USER, WEBDAV_PASS))
+        if r.status_code not in (201, 405):
+            raise Exception(f"MKCOL failed: {subdir}")
 
 def upload_dir(local_dir, remote_dir):
+    remote_dir = remote_dir.strip("/")
     webdav_mkdir(remote_dir)
 
     for root, _, files in os.walk(local_dir):
@@ -61,18 +61,16 @@ def upload_dir(local_dir, remote_dir):
             local_path = os.path.join(root, file)
             rel = os.path.relpath(local_path, local_dir)
             remote_path = f"{remote_dir}/{rel}".replace("\\", "/")
+            remote_path = remote_path.strip("/")
 
             parent = os.path.dirname(remote_path)
             webdav_mkdir(parent)
 
+            url = f"{WEBDAV_URL}/{quote(remote_path)}"
             with open(local_path, "rb") as f:
-                r = requests.put(
-                    f"{WEBDAV_URL}/{remote_path}",
-                    data=f,
-                    auth=(WEBDAV_USER, WEBDAV_PASS),
-                )
+                r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
                 if r.status_code not in (200, 201, 204):
-                    raise Exception(f"Upload failed: {remote_path}")
+                    raise Exception(f"Upload failed: {remote_path} ({r.status_code})")
 
 
 # 处理单个 flac
