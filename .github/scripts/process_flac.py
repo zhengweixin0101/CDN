@@ -9,8 +9,8 @@ from urllib.parse import quote
 BASE_DIR = "music"
 LIST_FILE = os.path.join(BASE_DIR, "music_list.json")
 
-WEBDAV_URL = os.environ.get("WEBDAV_URL")
-WEBDAV_UPLOAD_PATH = os.environ.get("WEBDAV_UPLOAD_PATH", "music")
+WEBDAV_URL = os.environ.get("WEBDAV_URL").rstrip("/")
+WEBDAV_UPLOAD_PATH = os.environ.get("WEBDAV_UPLOAD_PATH", "music").strip("/")
 WEBDAV_USER = os.environ.get("WEBDAV_USER")
 WEBDAV_PASS = os.environ.get("WEBDAV_PASS")
 
@@ -46,35 +46,19 @@ def compress_to_webp(image_path, quality=80):
 # WebDAV
 def upload(local_flac: str, remote_base: str):
     filename = os.path.basename(local_flac)
-    remote_path = f"{remote_base.strip('/')}/{filename}"
-    remote_path_quoted = "/".join(quote(p) for p in remote_path.split("/"))
+    remote_path = f"{remote_base}/{filename}".strip("/")
+    url = f"{WEBDAV_URL}/{quote(remote_path)}"
 
-    url = f"{WEBDAV_URL}/{remote_path_quoted}"
-
-    print("🔗 PUT URL =", url)
+    print(f"🔗 上传 URL: {url}")
 
     with open(local_flac, "rb") as f:
-        r = requests.put(
-            url,
-            data=f,
-            auth=(WEBDAV_USER, WEBDAV_PASS),
-            headers={"Content-Type": "audio/flac"},
-            timeout=120,
-        )
-
-    print("📦 status =", r.status_code)
-
-    if r.status_code in (200, 201, 204):
-        h = requests.head(url, auth=(WEBDAV_USER, WEBDAV_PASS))
-        if h.status_code in (200, 204):
+        r = requests.put(url, data=f, auth=(WEBDAV_USER, WEBDAV_PASS))
+        if r.status_code in (200, 201, 204):
             print("✅ 上传成功")
             return True
         else:
-            print("❌ PUT 成功但文件不存在，HEAD =", h.status_code)
+            print(f"❌ 上传失败: {r.status_code}")
             return False
-
-    print("❌ 上传失败")
-    return False
 
 
 # 处理单个 flac
