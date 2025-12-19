@@ -1,6 +1,5 @@
 import os
 import json
-import shutil
 from PIL import Image
 from mutagen.flac import FLAC
 
@@ -37,8 +36,7 @@ def compress_to_webp(image_path, quality=80):
         return image_path
 
 
-# 处理单个 flac
-def process_flac(flac_path):
+def process_flac(flac_path: str):
     audio = FLAC(flac_path)
 
     title = audio.get("title", [os.path.splitext(os.path.basename(flac_path))[0]])[0]
@@ -46,20 +44,8 @@ def process_flac(flac_path):
     album = audio.get("album", ["Unknown Album"])[0]
 
     folder_name = safe_name(f"{title}-{artist}")
-    renamed_flac = os.path.join(BASE_DIR, f"{folder_name}.flac")
-
-    # 重命名
-    if flac_path != renamed_flac:
-        os.rename(flac_path, renamed_flac)
-        print(f"✏️ 重命名: {os.path.basename(flac_path)} → {folder_name}.flac")
-
     song_dir = os.path.join(BASE_DIR, folder_name)
     os.makedirs(song_dir, exist_ok=True)
-
-    # 复制 flac
-    flac_dst = os.path.join(song_dir, f"{folder_name}.flac")
-    if not os.path.exists(flac_dst):
-        shutil.copy2(renamed_flac, flac_dst)
 
     # 封面
     cover_path = ""
@@ -81,7 +67,7 @@ def process_flac(flac_path):
         "title": title,
         "artist": artist,
         "album": album,
-        "music_path": flac_dst.replace("\\", "/"),
+        "music_path": flac_path.replace("\\", "/"),
         "lyrics_path": lyrics_path.replace("\\", "/"),
         "cover_path": cover_path.replace("\\", "/") if cover_path else "",
     }
@@ -90,56 +76,42 @@ def process_flac(flac_path):
     with open(info_path, "w", encoding="utf-8") as f:
         json.dump(info, f, ensure_ascii=False, indent=2)
 
-    return {
-        "folder_name": folder_name,
-        "info": info,
-        "info_path": info_path.replace("\\", "/"),
-    }
+    return folder_name, info, info_path.replace("\\", "/")
 
 
-# music_list
-def load_music_list():
-    if not os.path.exists(LIST_FILE):
-        return []
-    with open(LIST_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_music_list(data):
-    with open(LIST_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-# 主流程
 def main():
-    music_list = load_music_list()
+    flac_map = {}
+    music_list = []
 
-    flacs = [
-        f for f in os.listdir(BASE_DIR)
-        if f.lower().endswith(".flac")
-    ]
+    # 扫描 flac
+    for root, _, files in os.walk(BASE_DIR):
+        for f in files:
+            if f.lower().endswith(".flac"):
+                flac_path = os.path.join(root, f)
+                folder, info, info_path = process_flac(flac_path)
+                flac_map[folder] = flac_path
 
-    for flac in flacs:
-        src = os.path.join(BASE_DIR, flac)
-        print(f"🎵 发现 FLAC: {flac}")
-
-        try:
-            result = process_flac(src)
-
-            if not any(
-                item["path"] == result["info_path"]
-                for item in music_list
-            ):
                 music_list.append({
-                    "title": result["info"]["title"],
-                    "artist": result["info"]["artist"],
-                    "path": result["info_path"],
+                    "title": info["title"],
+                    "artist": info["artist"],
+                    "path": info_path,
                 })
 
-        except Exception as e:
-            print("❌ 处理失败:", e)
+    # 清理多余目录
+    for name in os.listdir(BASE_DIR):
+        folder_path = os.path.join(BASE_DIR, name)
+        if os.path.isdir(folder_path) and name not in flac_map:
+            print(f"🗑️ 删除无效歌曲目录: {name}")
+            for root, dirs, files in os.walk(folder_path, topdown=False):
+                for f in files:
+                    os.remove(os.path.join(root, f))
+                for d in dirs:
+                    os.rmdir(os.path.join(root, d))
+            os.rmdir(folder_path)
 
-    save_music_list(music_list)
+    # 生成 music_list.json
+    with open(LIST_FILE, "w", encoding="utf-8") as f:
+        json.dump(music_list, f, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
