@@ -22,10 +22,17 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install mutagen Pillow
+        run: |
+          pip install --upgrade pip
+          pip install mutagen Pillow requests
 
       - name: Run music processor
-        run: python .github/scripts/process_flac.py
+        env:
+          WEBDAV_URL: ${{ secrets.WEBDAV_URL }}
+          WEBDAV_USER: ${{ secrets.WEBDAV_USER }}
+          WEBDAV_PASS: ${{ secrets.WEBDAV_PASS }}
+        run: |
+          python .github/scripts/process_flac.py
 
       - name: Commit and push changes
         run: |
