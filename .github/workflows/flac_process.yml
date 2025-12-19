@@ -29,6 +29,7 @@ jobs:
       - name: Run music processor
         env:
           WEBDAV_URL: ${{ secrets.WEBDAV_URL }}
+          WEBDAV_UPLOAD_PATH: ${{ secrets.WEBDAV_UPLOAD_PATH }}
           WEBDAV_USER: ${{ secrets.WEBDAV_USER }}
           WEBDAV_PASS: ${{ secrets.WEBDAV_PASS }}
         run: |
