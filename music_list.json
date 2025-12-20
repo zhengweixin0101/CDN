@@ -80,11 +80,6 @@
     "path": "meta/万有引力-汪苏泷/info.json"
   },
   {
-    "title": "爱爱爱",
-    "artist": "方大同",
-    "path": "meta/爱爱爱-方大同/info.json"
-  },
-  {
     "title": "唯一",
     "artist": "G.E.M. 邓紫棋",
     "path": "meta/唯一-G.E.M. 邓紫棋/info.json"
@@ -118,11 +113,6 @@
     "title": "蒲公英的约定",
     "artist": "周杰伦",
     "path": "meta/蒲公英的约定-周杰伦/info.json"
-  },
-  {
-    "title": "普通朋友",
-    "artist": "陶喆",
-    "path": "meta/普通朋友-陶喆/info.json"
   },
   {
     "title": "红色高跟鞋",
@@ -220,6 +210,11 @@
     "path": "meta/好想好想你-G.E.M. 邓紫棋/info.json"
   },
   {
+    "title": "我们俩",
+    "artist": "郭顶",
+    "path": "meta/我们俩-郭顶/info.json"
+  },
+  {
     "title": "Cry For Me (feat. Ami)",
     "artist": "Michita",
     "path": "meta/Cry For Me (feat. Ami)-Michita/info.json"
@@ -273,11 +268,6 @@
     "title": "Teeth",
     "artist": "5 Seconds Of Summer",
     "path": "meta/Teeth-5 Seconds Of Summer/info.json"
-  },
-  {
-    "title": "我们俩",
-    "artist": "郭顶",
-    "path": "meta/我们俩-郭顶/info.json"
   },
   {
     "title": "奢香夫人",
@@ -353,6 +343,11 @@
     "title": "LETTING GO",
     "artist": "蔡健雅",
     "path": "meta/LETTING GO-蔡健雅/info.json"
+  },
+  {
+    "title": "普通朋友",
+    "artist": "陶喆",
+    "path": "meta/普通朋友-陶喆/info.json"
   },
   {
     "title": "花海",
