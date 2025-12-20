@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - music
-    paths:
-      - '**/*.flac'
 
 jobs:
   process:
