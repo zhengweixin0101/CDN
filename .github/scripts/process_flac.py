@@ -109,27 +109,29 @@ def main():
     music_list = []
 
     # 扫描所有 flac
-    for root, _, files in os.walk(FLAC_SCAN_DIR):
-        for name in files:
-            if not name.lower().endswith(".flac"):
+    for name in os.listdir(FLAC_SCAN_DIR):
+        if not name.lower().endswith(".flac"):
+            continue
+
+        flac_path = os.path.join(FLAC_SCAN_DIR, name)
+        if not os.path.isfile(flac_path):
+            continue
+
+        print(f"🎵 处理 FLAC: {flac_path}")
+
+        try:
+            folder, info, info_path = process_flac(flac_path)
+            if folder is None:
                 continue
+            valid_meta.add(folder)
 
-            flac_path = os.path.join(root, name)
-            print(f"🎵 处理 FLAC: {flac_path}")
-
-            try:
-                folder, info, info_path = process_flac(flac_path)
-                if folder is None:
-                    continue
-                valid_meta.add(folder)
-
-                music_list.append({
-                    "title": info["title"],
-                    "artist": info["artist"],
-                    "path": info_path,
-                })
-            except Exception as e:
-                print("❌ 处理失败:", e)
+            music_list.append({
+                "title": info["title"],
+                "artist": info["artist"],
+                "path": info_path,
+            })
+        except Exception as e:
+            print("❌ 处理失败:", e)
 
     # 清理无效 meta
     for name in os.listdir(META_DIR):
