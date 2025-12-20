@@ -46,9 +46,15 @@ jobs:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
+          if [ -z "$(ls -A duplicates)" ]; then
+            echo "🟢 没有重复文件，跳过 PR"
+            exit 0
+          fi
+
           git checkout -b "duplicates-$(date +%s)"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           git add duplicates
           git commit -m "⚠️ Duplicate FLAC files"
           git push origin HEAD --set-upstream
