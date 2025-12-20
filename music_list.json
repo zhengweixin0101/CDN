@@ -363,5 +363,20 @@
     "title": "爱爱爱",
     "artist": "方大同",
     "path": "meta/爱爱爱-方大同/info.json"
+  },
+  {
+    "title": "大鱼",
+    "artist": "周深",
+    "path": "meta/大鱼-周深/info.json"
+  },
+  {
+    "title": "多远都要在一起",
+    "artist": "邓紫棋",
+    "path": "meta/多远都要在一起-邓紫棋/info.json"
+  },
+  {
+    "title": "我落泪情绪零碎",
+    "artist": "周杰伦",
+    "path": "meta/我落泪情绪零碎-周杰伦/info.json"
   }
 ]
