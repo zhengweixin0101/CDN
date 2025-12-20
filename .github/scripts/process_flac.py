@@ -95,12 +95,11 @@ def generate_meta(audio: FLAC, key: str, flac_path: str):
 
 def main():
     music_list = load_music_list()
-    existing_keys = {item["key"] for item in music_list}
 
     # 扫描 flac
     root_flacs = [
         f for f in os.listdir(ROOT_FLAC_DIR)
-        if f.lower().endswith(".flac") and os.path.isfile(f)
+        if f.lower().endswith(".flac") and os.path.isfile(os.path.join(ROOT_FLAC_DIR, f))
     ]
 
     for flac_file in root_flacs:
@@ -126,7 +125,6 @@ def main():
             info = generate_meta(audio, key, target_flac)
 
             music_list.append({
-                "key": key,
                 "title": info["title"],
                 "artist": info["artist"],
                 "path": os.path.join("meta", key, "info.json").replace("\\", "/")
@@ -144,11 +142,12 @@ def main():
 
     new_list = []
     for item in music_list:
-        if item["key"] in music_keys:
+        key = safe_name(f'{item["title"]}-{item["artist"]}')
+        if key in music_keys:
             new_list.append(item)
         else:
-            print(f"🗑️ 歌曲已删除，清理 meta: {item['key']}")
-            shutil.rmtree(os.path.join(META_DIR, item["key"]), ignore_errors=True)
+            print(f"🗑️ 歌曲已删除，清理 meta: {key}")
+            shutil.rmtree(os.path.join(META_DIR, key), ignore_errors=True)
 
     save_music_list(new_list)
     print(f"\n✅ 完成：当前共 {len(new_list)} 首歌")
