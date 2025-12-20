@@ -57,8 +57,15 @@ def process_flac(flac_path: str):
     # 移动重复歌曲到 duplicates
     song_dir = os.path.join(META_DIR, folder_name)
     if os.path.exists(song_dir):
-        dup_path = os.path.join(DUP_DIR, os.path.basename(flac_path))
-        shutil.copy2(flac_path, dup_path)
+        os.makedirs(DUP_DIR, exist_ok=True)
+        base_name = os.path.basename(flac_path)
+        dup_path = os.path.join(DUP_DIR, base_name)
+        count = 1
+        name, ext = os.path.splitext(base_name)
+        while os.path.exists(dup_path):
+            dup_path = os.path.join(DUP_DIR, f"{name}_{count}{ext}")
+            count += 1
+        shutil.move(flac_path, dup_path)
         print(f"⚠️ 重复文件，已移动到 duplicates: {dup_path}")
         return None, None, None
 
