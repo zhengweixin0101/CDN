@@ -42,6 +42,8 @@ jobs:
           git push
 
       - name: Commit and create PR for duplicates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           git checkout -b "duplicates-$(date +%s)"
@@ -49,8 +51,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add duplicates
           git commit -m "⚠️ Duplicate FLAC files"
-          git push origin HEAD
+          git push origin HEAD --set-upstream
           gh pr create --title "Duplicate FLAC files" \
                        --body "以下文件与现有歌曲重复，请手动处理" \
                        --base music \
-                       --head $(git rev-parse --abbrev-ref HEAD)
+                       --head "$BRANCH"
