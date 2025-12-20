@@ -8,9 +8,11 @@ from mutagen.flac import FLAC
 REPO_ROOT = os.getcwd()
 FLAC_SCAN_DIR = os.path.join(REPO_ROOT, "music")
 META_DIR = os.path.join(REPO_ROOT, "meta")
+DUP_DIR = os.path.join(REPO_ROOT, "duplicates")
 LIST_FILE = os.path.join(REPO_ROOT, "music_list.json")
 
 os.makedirs(META_DIR, exist_ok=True)
+os.makedirs(DUP_DIR, exist_ok=True)
 
 
 def safe_name(s: str) -> str:
@@ -51,7 +53,15 @@ def process_flac(flac_path: str):
     album = audio.get("album", ["Unknown Album"])[0]
 
     folder_name = safe_name(f"{title}-{artist}")
+
+    # 移动重复歌曲到 duplicates
     song_dir = os.path.join(META_DIR, folder_name)
+    if os.path.exists(song_dir):
+        dup_path = os.path.join(DUP_DIR, os.path.basename(flac_path))
+        shutil.copy2(flac_path, dup_path)
+        print(f"⚠️ 重复文件，已移动到 duplicates: {dup_path}")
+        return None, None, None
+
     os.makedirs(song_dir, exist_ok=True)
 
     # 封面
@@ -74,7 +84,6 @@ def process_flac(flac_path: str):
         "title": title,
         "artist": artist,
         "album": album,
-        # 转成相对路径
         "music_path": os.path.relpath(flac_path, REPO_ROOT).replace("\\", "/"),
         "lyrics_path": os.path.relpath(lyrics_path, REPO_ROOT).replace("\\", "/"),
         "cover_path": os.path.relpath(cover_path, REPO_ROOT).replace("\\", "/") if cover_path else "",
@@ -103,6 +112,8 @@ def main():
 
             try:
                 folder, info, info_path = process_flac(flac_path)
+                if folder is None:
+                    continue
                 valid_meta.add(folder)
 
                 music_list.append({
