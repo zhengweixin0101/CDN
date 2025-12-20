@@ -2,7 +2,7 @@
   "title": "告白气球",
   "artist": "周杰伦",
   "album": "周杰伦的床边故事",
-  "music_path": "/home/runner/work/CDN/CDN/music/告白气球-周杰伦.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/告白气球-周杰伦/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/告白气球-周杰伦/cover.webp"
+  "music_path": "music/告白气球-周杰伦.flac",
+  "lyrics_path": "meta/告白气球-周杰伦/lyrics.lrc",
+  "cover_path": "meta/告白气球-周杰伦/cover.webp"
 }

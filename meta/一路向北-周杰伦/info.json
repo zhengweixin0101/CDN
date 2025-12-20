@@ -2,7 +2,7 @@
   "title": "一路向北",
   "artist": "周杰伦",
   "album": "十一月的萧邦",
-  "music_path": "/home/runner/work/CDN/CDN/music/一路向北-周杰伦.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/一路向北-周杰伦/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/一路向北-周杰伦/cover.webp"
+  "music_path": "music/一路向北-周杰伦.flac",
+  "lyrics_path": "meta/一路向北-周杰伦/lyrics.lrc",
+  "cover_path": "meta/一路向北-周杰伦/cover.webp"
 }

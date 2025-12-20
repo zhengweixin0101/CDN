@@ -2,7 +2,7 @@
   "title": "爱爱爱",
   "artist": "方大同",
   "album": "爱爱爱",
-  "music_path": "/home/runner/work/CDN/CDN/music/爱爱爱-方大同.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/爱爱爱-方大同/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/爱爱爱-方大同/cover.webp"
+  "music_path": "music/爱爱爱-方大同.flac",
+  "lyrics_path": "meta/爱爱爱-方大同/lyrics.lrc",
+  "cover_path": "meta/爱爱爱-方大同/cover.webp"
 }

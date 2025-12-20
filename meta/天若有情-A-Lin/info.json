@@ -2,7 +2,7 @@
   "title": "天若有情",
   "artist": "A-Lin",
   "album": "天若有情",
-  "music_path": "/home/runner/work/CDN/CDN/music/天若有情-A-Lin.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/天若有情-A-Lin/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/天若有情-A-Lin/cover.webp"
+  "music_path": "music/天若有情-A-Lin.flac",
+  "lyrics_path": "meta/天若有情-A-Lin/lyrics.lrc",
+  "cover_path": "meta/天若有情-A-Lin/cover.webp"
 }

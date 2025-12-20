@@ -2,7 +2,7 @@
   "title": "蒲公英的约定",
   "artist": "周杰伦",
   "album": "我很忙",
-  "music_path": "/home/runner/work/CDN/CDN/music/蒲公英的约定-周杰伦.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/蒲公英的约定-周杰伦/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/蒲公英的约定-周杰伦/cover.webp"
+  "music_path": "music/蒲公英的约定-周杰伦.flac",
+  "lyrics_path": "meta/蒲公英的约定-周杰伦/lyrics.lrc",
+  "cover_path": "meta/蒲公英的约定-周杰伦/cover.webp"
 }

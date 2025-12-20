@@ -2,7 +2,7 @@
   "title": "唯一",
   "artist": "G.E.M. 邓紫棋",
   "album": "T.I.M.E.",
-  "music_path": "/home/runner/work/CDN/CDN/music/唯一-G.E.M. 邓紫棋.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/唯一-G.E.M. 邓紫棋/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/唯一-G.E.M. 邓紫棋/cover.webp"
+  "music_path": "music/唯一-G.E.M. 邓紫棋.flac",
+  "lyrics_path": "meta/唯一-G.E.M. 邓紫棋/lyrics.lrc",
+  "cover_path": "meta/唯一-G.E.M. 邓紫棋/cover.webp"
 }

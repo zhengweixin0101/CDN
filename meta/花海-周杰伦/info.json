@@ -2,7 +2,7 @@
   "title": "花海",
   "artist": "周杰伦",
   "album": "魔杰座",
-  "music_path": "/home/runner/work/CDN/CDN/music/花海-周杰伦.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/花海-周杰伦/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/花海-周杰伦/cover.webp"
+  "music_path": "music/花海-周杰伦.flac",
+  "lyrics_path": "meta/花海-周杰伦/lyrics.lrc",
+  "cover_path": "meta/花海-周杰伦/cover.webp"
 }

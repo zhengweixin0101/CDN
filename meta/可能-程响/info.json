@@ -2,7 +2,7 @@
   "title": "可能",
   "artist": "程响",
   "album": "可能",
-  "music_path": "/home/runner/work/CDN/CDN/music/可能-程响.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/可能-程响/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/可能-程响/cover.webp"
+  "music_path": "music/可能-程响.flac",
+  "lyrics_path": "meta/可能-程响/lyrics.lrc",
+  "cover_path": "meta/可能-程响/cover.webp"
 }

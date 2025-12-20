@@ -2,7 +2,7 @@
   "title": "凑热闹",
   "artist": "BY2",
   "album": "超人气女组合",
-  "music_path": "/home/runner/work/CDN/CDN/music/凑热闹-BY2.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/凑热闹-BY2/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/凑热闹-BY2/cover.webp"
+  "music_path": "music/凑热闹-BY2.flac",
+  "lyrics_path": "meta/凑热闹-BY2/lyrics.lrc",
+  "cover_path": "meta/凑热闹-BY2/cover.webp"
 }

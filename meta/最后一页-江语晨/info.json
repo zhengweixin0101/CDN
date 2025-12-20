@@ -2,7 +2,7 @@
   "title": "最后一页",
   "artist": "江语晨",
   "album": "恋习",
-  "music_path": "/home/runner/work/CDN/CDN/music/最后一页-江语晨.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/最后一页-江语晨/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/最后一页-江语晨/cover.webp"
+  "music_path": "music/最后一页-江语晨.flac",
+  "lyrics_path": "meta/最后一页-江语晨/lyrics.lrc",
+  "cover_path": "meta/最后一页-江语晨/cover.webp"
 }

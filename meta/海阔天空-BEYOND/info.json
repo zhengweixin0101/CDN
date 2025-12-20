@@ -2,7 +2,7 @@
   "title": "海阔天空",
   "artist": "BEYOND",
   "album": "乐与怒",
-  "music_path": "/home/runner/work/CDN/CDN/music/海阔天空-BEYOND.flac",
-  "lyrics_path": "/home/runner/work/CDN/CDN/meta/海阔天空-BEYOND/lyrics.lrc",
-  "cover_path": "/home/runner/work/CDN/CDN/meta/海阔天空-BEYOND/cover.webp"
+  "music_path": "music/海阔天空-BEYOND.flac",
+  "lyrics_path": "meta/海阔天空-BEYOND/lyrics.lrc",
+  "cover_path": "meta/海阔天空-BEYOND/cover.webp"
 }
