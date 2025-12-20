@@ -37,28 +37,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add . ':!duplicates'
+          git add . 
           git commit -m "🎵 Auto process new FLAC file(s)" || echo "No changes to commit"
           git push
-
-      - name: Commit and create PR for duplicates
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          cd $GITHUB_WORKSPACE
-          if [ -z "$(ls -A duplicates)" ]; then
-            echo "🟢 没有重复文件，跳过 PR"
-            exit 0
-          fi
-
-          git checkout -b "duplicates-$(date +%s)"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add duplicates
-          git commit -m "⚠️ Duplicate FLAC files"
-          git push origin HEAD --set-upstream
-          gh pr create --title "Duplicate FLAC files" \
-                       --body "以下文件与现有歌曲重复，请手动处理" \
-                       --base music \
-                       --head "$BRANCH"
