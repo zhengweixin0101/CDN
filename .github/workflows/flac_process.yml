@@ -43,7 +43,7 @@ jobs:
 
       - name: Commit and create PR for duplicates
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           git checkout -b "duplicates-$(date +%s)"
