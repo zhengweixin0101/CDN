@@ -74,16 +74,17 @@ def process_flac(flac_path: str):
         "title": title,
         "artist": artist,
         "album": album,
-        "music_path": flac_path.replace("\\", "/"),
-        "lyrics_path": lyrics_path.replace("\\", "/"),
-        "cover_path": cover_path.replace("\\", "/") if cover_path else "",
+        # 转成相对路径
+        "music_path": os.path.relpath(flac_path, REPO_ROOT).replace("\\", "/"),
+        "lyrics_path": os.path.relpath(lyrics_path, REPO_ROOT).replace("\\", "/"),
+        "cover_path": os.path.relpath(cover_path, REPO_ROOT).replace("\\", "/") if cover_path else "",
     }
 
     info_path = os.path.join(song_dir, "info.json")
     with open(info_path, "w", encoding="utf-8") as f:
         json.dump(info, f, ensure_ascii=False, indent=2)
 
-    return folder_name, info, info_path.replace("\\", "/")
+    return folder_name, info, os.path.relpath(info_path, REPO_ROOT).replace("\\", "/")
 
 
 # 主流程
