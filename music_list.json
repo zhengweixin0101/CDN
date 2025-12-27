@@ -1,38 +1,18 @@
 [
   {
-    "title": "把回忆拼好给你",
-    "artist": "cici_",
-    "path": "meta/把回忆拼好给你-cici_/info.json"
-  },
-  {
-    "title": "Faded",
-    "artist": "Alan Walker",
-    "path": "meta/Faded-Alan Walker/info.json"
-  },
-  {
     "title": "句号",
     "artist": "G.E.M. 邓紫棋",
     "path": "meta/句号-G.E.M. 邓紫棋/info.json"
   },
   {
-    "title": "Jar Of Love",
-    "artist": "曲婉婷",
-    "path": "meta/Jar Of Love-曲婉婷/info.json"
-  },
-  {
-    "title": "我想念",
-    "artist": "汪苏泷",
-    "path": "meta/我想念-汪苏泷/info.json"
+    "title": "唯一",
+    "artist": "G.E.M. 邓紫棋",
+    "path": "meta/唯一-G.E.M. 邓紫棋/info.json"
   },
   {
     "title": "七里香",
     "artist": "周杰伦",
     "path": "meta/七里香-周杰伦/info.json"
-  },
-  {
-    "title": "有何不可",
-    "artist": "许嵩",
-    "path": "meta/有何不可-许嵩/info.json"
   },
   {
     "title": "光辉岁月",
@@ -53,6 +33,21 @@
     "title": "水手",
     "artist": "郑智化",
     "path": "meta/水手-郑智化/info.json"
+  },
+  {
+    "title": "有何不可",
+    "artist": "许嵩",
+    "path": "meta/有何不可-许嵩/info.json"
+  },
+  {
+    "title": "Jar Of Love",
+    "artist": "曲婉婷",
+    "path": "meta/Jar Of Love-曲婉婷/info.json"
+  },
+  {
+    "title": "我想念",
+    "artist": "汪苏泷",
+    "path": "meta/我想念-汪苏泷/info.json"
   },
   {
     "title": "Shape of You",
@@ -80,11 +75,6 @@
     "path": "meta/万有引力-汪苏泷/info.json"
   },
   {
-    "title": "唯一",
-    "artist": "G.E.M. 邓紫棋",
-    "path": "meta/唯一-G.E.M. 邓紫棋/info.json"
-  },
-  {
     "title": "稻香",
     "artist": "周杰伦",
     "path": "meta/稻香-周杰伦/info.json"
@@ -98,6 +88,16 @@
     "title": "Try Everything",
     "artist": "Shakira",
     "path": "meta/Try Everything-Shakira/info.json"
+  },
+  {
+    "title": "把回忆拼好给你",
+    "artist": "cici_",
+    "path": "meta/把回忆拼好给你-cici_/info.json"
+  },
+  {
+    "title": "Faded",
+    "artist": "Alan Walker",
+    "path": "meta/Faded-Alan Walker/info.json"
   },
   {
     "title": "一笑倾城",
